@@ -14,7 +14,8 @@ import { ReactComponent as NegativeSVG } from "./icons/Negative.svg"
 import { ReactComponent as CoinSVG } from "./icons/Coin.svg"
 import { ReactComponent as ArrowUpSVG } from "./icons/ArrowUp.svg"
 import { ReactComponent as ArrowDownSVG } from "./icons/ArrowDown.svg"
-import { ReactComponent as LogoSVG } from "./icons/YinYang.svg"
+import { ReactComponent as LogoSVG } from "./icons/Logo.svg"
+import { ReactComponent as SuccessSVG } from "./icons/Success.svg"
 import { ReactComponent as ChevronRightSVG } from "./icons/ChevronRight.svg"
 
 export const ChartIcon = ChartSVG
@@ -31,9 +32,10 @@ export const PlusIcon = PlusSVG
 export const PositiveIcon = PositiveSVG
 export const NegativeIcon = NegativeSVG
 export const CoinIcon = CoinSVG
-export const ArrowUpIcon = ArrowUpSVG
-export const ArrowDownIcon = ArrowDownSVG
 export const LogoIcon = LogoSVG
+export const SuccessIcon = SuccessSVG
 
 // Arrows
+export const ArrowUpIcon = ArrowUpSVG
+export const ArrowDownIcon = ArrowDownSVG
 export const ChevronRightIcon = ChevronRightSVG

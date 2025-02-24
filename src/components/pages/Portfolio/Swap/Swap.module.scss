@@ -1,13 +1,59 @@
 .container {
   width: 700px;
-  height: fit-content;
+  height: 520px;
   display: flex;
   flex-direction: column;
   border-radius: 24px;
   border: 1px solid var(--unifi-border);
   background-color: var(--unifi-secondary);
   padding: 24px;
-  gap: 28px;
+
+  .token {
+    width: 100%;
+    padding: 22px 12px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--unifi-border);
+    
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+
+    .name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .symbol {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--unifi-supporting);
+    }
+
+    .price {
+      font-size: 11px;
+      color: var(--unifi-supporting);
+    }
+
+    .balance {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .value {
+      font-size: 12px;
+      color: var(--unifi-supporting);
+    }
+
+    .line {
+      height: 10px;
+      width: 1px;
+      background-color: var(--unifi-supporting);
+    }
+  }
 
   .separator {
     display: flex;
@@ -46,9 +92,65 @@
     border-radius: 18px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    margin-top: auto;
 
     &:hover {
       background-color: var(--unifi-secondary-hover);
     }
+  }
+
+  .transitions {
+    .title {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--unifi-text);
+    }
+
+    .message {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--unifi-text-secondary);
+    }
+
+    .icon {
+      animation: bounce-in-fwd 1.1s both;
+    }
+  }
+}
+
+@keyframes bounce-in-fwd {
+  0% {
+    transform: scale(0);
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+  38% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+    opacity: 1;
+  }
+  55% {
+    transform: scale(0.7);
+    animation-timing-function: ease-in;
+  }
+  72% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+  }
+  81% {
+    transform: scale(0.84);
+    animation-timing-function: ease-in;
+  }
+  89% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+  }
+  95% {
+    transform: scale(0.95);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
   }
 }

@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Fragment>
       <Head>
-        <title>Unifi</title>
+        <title>Dumb Finance</title>
         <link rel="icon" href="/logo.svg" />
       </Head>
       <main

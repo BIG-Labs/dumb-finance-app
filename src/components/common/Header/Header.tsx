@@ -7,7 +7,7 @@ import { LogoIcon } from "assets"
 const Header = () => {
   return (
     <header className={styles.header}>
-      <LogoIcon width={42} height={42} />
+      <LogoIcon width={50} height={50} />
       <div className={styles.search}>
         <SearchIcon width={18} height={18} stroke="var(--unifi-text)" />
         <input placeholder="Coming soon..." />

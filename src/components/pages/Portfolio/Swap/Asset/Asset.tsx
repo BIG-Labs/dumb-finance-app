@@ -7,11 +7,11 @@ import { Token } from "types/response"
 import styles from "./Asset.module.scss"
 
 interface AssetProps {
-  amount: number
-  token?: Token
-  from?: Token
   setAmount: (amount: number) => void
   onOpen: () => void
+  amount?: number
+  token?: Token
+  from?: Token
 }
 
 const Asset = ({ amount, setAmount, token, from, onOpen }: AssetProps) => {
@@ -37,7 +37,7 @@ const Asset = ({ amount, setAmount, token, from, onOpen }: AssetProps) => {
     (value: number) => {
       const balance = token?.balance || 0
 
-      if (amount > balance) {
+      if ((amount ?? 0) > balance) {
         setAmount(token?.balance || 0)
         return
       }

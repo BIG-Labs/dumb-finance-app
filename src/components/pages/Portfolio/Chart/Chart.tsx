@@ -29,11 +29,11 @@ const Chart = () => {
     chart: {
       type: "areaspline",
       backgroundColor: "transparent",
-      height: 240,
+      height: 250,
       spacingBottom: 0,
       spacingLeft: 0,
       spacingRight: 0,
-      spacingTop: -48,
+      spacingTop: -35,
     },
     title: {
       text: "",
@@ -88,7 +88,7 @@ const Chart = () => {
     },
     series: [
       {
-        name: "Tokyo",
+        name: "Balance",
         data: Array.from({ length: 50 }, () => {
           const number = [580, 600, 520]
 
@@ -135,7 +135,7 @@ const Chart = () => {
           <small className={styles.title}>Portfolio</small>
           <h1 className={styles.balance}>$37,394.90</h1>
           <HStack alignItems="center" gap={4}>
-            <ProfitText percentage={0.5} size={12} />
+            <ProfitText percentage={0.5} size={14} />
             <small>past {timespanLabels[activeTimespan]}</small>
           </HStack>
         </VStack>

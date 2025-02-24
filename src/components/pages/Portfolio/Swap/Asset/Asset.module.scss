@@ -1,0 +1,71 @@
+.asset {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 24px;
+
+  .token {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    padding: 8px 12px;
+    border-radius: 18px;
+    border: 1px solid var(--unifi-border);
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: var(--unifi-text);
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+
+    .symbol {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  .balance {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--unifi-supporting);
+    cursor: pointer;
+
+    .amount {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--unifi-text);
+    }
+  }
+
+  .input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 4px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--unifi-text);
+
+    &::placeholder {
+      color: var(--unifi-supporting);
+    }
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+  }
+
+  .output {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--unifi-supporting);
+  }
+}

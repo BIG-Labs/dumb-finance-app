@@ -1,0 +1,35 @@
+.text {
+  font-weight: 500;
+
+  &.positive {
+    color: var(--unifi-positive);
+  }
+
+  &.negative {
+    color: var(--unifi-negative);
+  }
+}
+
+.button {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-width: 1px;
+  border-style: solid;
+
+  &.positive {
+    color: var(--unifi-positive);
+    border-color: var(--unifi-positive);
+  }
+
+  &.negative {
+    color: var(--unifi-negative);
+    border-color: var(--unifi-negative);
+  }
+}

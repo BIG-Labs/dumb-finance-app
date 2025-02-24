@@ -1,0 +1,11 @@
+<svg width="inherit" height="inherit" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"
+  fill="none" stroke="inherit" stroke-width="3">
+  <g stroke-width="0" />
+  <g stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M8 36h8v16H8m8-14h8a4 4 0 0 1 4 4h9a3 3 0 0 1 3 3 3 3 0 0 1-3 3H26" />
+  <path
+    d="m40 44.8 6.63-4a5.8 5.8 0 0 1 3-.82 5.78 5.78 0 0 1 4.09 1.69L56 44 38.07 54.76A8.75 8.75 0 0 1 33.58 56a8.7 8.7 0 0 1-3.06-.56L16 50" />
+  <circle cx="38" cy="22" r="14" />
+  <path
+    d="M36.33 22a3.34 3.34 0 0 1 0-6.67M39.67 22a3.34 3.34 0 0 1 0 6.67M38 12v3.33m0 13.34V32m-1.67-10h3.34M43 17s-1.67-1.67-3.33-1.67h-3.34M33 27s1.67 1.67 3.33 1.67h3.34" />
+</svg>

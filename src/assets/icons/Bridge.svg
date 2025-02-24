@@ -1,0 +1,8 @@
+<svg width="inherit" height="inherit" viewBox="0 0 15 15" stroke="inherit" fill="inherit"
+  stroke-width=".4"
+  xmlns="http://www.w3.org/2000/svg">
+  <g stroke-width="0" />
+  <g stroke-linecap="round" stroke-linejoin="round" />
+  <path
+    d="M0 8.842V13h2v-1a2.07 2.07 0 0 1 2-2 2.07 2.07 0 0 1 2 2v1h3v-1a2.07 2.07 0 0 1 2-2 2.07 2.07 0 0 1 2 2v1h2V8.842a9.245 9.245 0 0 0-15 0m9.5-3.108a9 9 0 0 1 1.5.5V9H9.5zm-.5-.1V9H7.5V5.506q.756 0 1.5.128m-5.5.843q.722-.373 1.5-.606V9H3.5zM5.5 9V5.73A9 9 0 0 1 7 5.515V9zM3 6.744V9H.5A8.8 8.8 0 0 1 3 6.744M11.5 9V6.5l-.053-.053A8.7 8.7 0 0 1 14.5 9z" />
+</svg>

@@ -1,0 +1,77 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  width: 100%;
+  padding: 24px 12px;
+  border-bottom: 1px solid var(--unifi-border);
+
+  .search {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--unifi-border);
+    border-radius: 8px;
+    gap: 4px;
+    padding: 4px 12px;
+
+    input {
+      background-color: transparent;
+      padding: 8px;
+      outline: none;
+      border: none;
+      width: 300px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    height: 20px;
+
+    .wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .link {
+        position: relative;
+        margin: 0 26px;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--unifi-text);
+        font-weight: 600;
+      }
+
+      .link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        height: 2px;
+        background: var(--unifi-text);
+        border-radius: 2px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .link:hover::after {
+        transform: scaleX(1);
+      }
+
+      .link:not(:hover)::after {
+        transform-origin: right;
+        transform: scaleX(0);
+      }
+    }
+
+    :not(:last-child) {
+      border-right: 1px solid var(--unifi-border);
+    }
+  }
+}

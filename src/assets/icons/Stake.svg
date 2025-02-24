@@ -1,0 +1,10 @@
+<svg width="inherit" height="inherit" stroke="inherit" viewBox="0 0 24 24"
+  xmlns="http://www.w3.org/2000/svg"
+  class="icon line">
+  <g stroke-width="0" />
+  <g stroke-linecap="round" stroke-linejoin="round" />
+  <path style="fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5" d="M13 7v6H7" />
+  <path data-name="primary"
+    style="fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5"
+    d="M13 13 3 3m10 0h7a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-7" />
+</svg>

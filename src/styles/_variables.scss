@@ -1,0 +1,32 @@
+// Variables
+
+// Prefix
+$prefix: "unifi-" !default;
+
+// Colors
+$background: #121212 !default;
+$primary: #e13c33 !default;
+$secondary: #171717 !default;
+$text: #eaeaea !default;
+$border: #292929 !default;
+$supporting: #909296 !default;
+$shy: #2a2a2a !default;
+$positive: #2ecc71 !default;
+$negative: #e74c3c !default;
+
+// Hover
+$secondary-hover: #272727 !default;
+
+// Color map
+$colors: (
+  background: $background,
+  primary: $primary,
+  secondary: $secondary,
+  text: $text,
+  border: $border,
+  supporting: $supporting,
+  shy: $shy,
+  positive: $positive,
+  negative: $negative,
+  secondary-hover: $secondary-hover,
+) !default;

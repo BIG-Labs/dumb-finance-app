@@ -1,4 +1,5 @@
 export type Token = {
+  id: number
   address: string
   icon: string
   name: string
@@ -7,4 +8,7 @@ export type Token = {
   decimals: number
   percentChange: number
   balance: number
+  tvl: number
+  apr: number
+  prices: Array<Array<number>>
 }

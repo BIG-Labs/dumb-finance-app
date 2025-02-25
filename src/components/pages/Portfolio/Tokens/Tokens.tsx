@@ -5,8 +5,11 @@ import { useMemo } from "react"
 import { Img } from "react-image"
 import { ChevronRightIcon, CoinIcon } from "assets"
 import ProfitText from "components/common/Profit/ProfitText"
+import { useRouter } from "next/router"
 
 const Tokens = () => {
+  const { push } = useRouter()
+
   const { data, isLoading } = useTokensQuery()
 
   const tokens = useMemo(() => {
@@ -27,8 +30,23 @@ const Tokens = () => {
       </div>
       <div className={styles.tokens}>
         {tokens.map(
-          ({ address, icon, name, symbol, price, balance, percentChange }) => (
-            <div key={address} className={styles.row}>
+          ({
+            id,
+            address,
+            icon,
+            name,
+            symbol,
+            price,
+            balance,
+            percentChange,
+          }) => (
+            <div
+              key={address}
+              className={styles.row}
+              onClick={() =>
+                push(`/token/${id}`, undefined, { shallow: true })
+              }
+            >
               <HStack alignItems="center" gap={8}>
                 <Img
                   src={icon}

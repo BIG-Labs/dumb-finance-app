@@ -1,0 +1,37 @@
+.stats {
+  display: flex;
+  align-items: center;
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    padding: 0 18px;
+    border-right: 1px solid var(--unifi-border);
+
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--unifi-supporting);
+      text-decoration: underline;
+      text-decoration-style: dashed;
+      text-underline-offset: 6px;
+      letter-spacing: 1px;
+    }
+
+    .value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--unifi-text);
+
+      &.positive {
+        color: var(--unifi-positive);
+      }
+
+      &.negative {
+        color: var(--unifi-negative);
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ import styles from "./Header.module.scss"
 import { links } from "constants/links"
 import { capitalizeFirstLetter } from "@big-components/utils"
 import { LogoIcon } from "assets"
+import Link from "next/link"
 
 const Header = () => {
   return (
@@ -15,7 +16,9 @@ const Header = () => {
       <div className={styles.links}>
         {links.map((link) => (
           <div key={link} className={styles.wrapper}>
-            <p className={styles.link}>{capitalizeFirstLetter(link)}</p>
+            <Link href={`/${link === "home" ? "" : link}`} passHref>
+              <p className={styles.link}>{capitalizeFirstLetter(link)}</p>
+            </Link>
           </div>
         ))}
       </div>

@@ -1,13 +1,59 @@
 .container {
   width: 700px;
-  height: 350px;
+  height: 520px;
   display: flex;
   flex-direction: column;
-  gap: 26px;
   border-radius: 24px;
   border: 1px solid var(--unifi-border);
   background-color: var(--unifi-secondary);
   padding: 24px;
+
+  .token {
+    width: 100%;
+    padding: 22px 12px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--unifi-border);
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+
+    .name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .symbol {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--unifi-supporting);
+    }
+
+    .price {
+      font-size: 11px;
+      color: var(--unifi-supporting);
+    }
+
+    .balance {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .value {
+      font-size: 12px;
+      color: var(--unifi-supporting);
+    }
+
+    .line {
+      height: 10px;
+      width: 1px;
+      background-color: var(--unifi-supporting);
+    }
+  }
 
   .asset {
     width: 100%;
@@ -17,8 +63,8 @@
     padding-left: 6px;
     padding-right: 6px;
     padding-bottom: 24px;
-
-    .token {
+    
+    .item {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -78,6 +124,30 @@
       font-size: 14px;
       font-weight: 500;
       color: var(--unifi-supporting);
+    }
+  }
+
+  .separator {
+    display: flex;
+    height: 1px;
+    background-color: var(--unifi-border);
+  }
+
+  .swap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--unifi-border);
+    background-color: transparent;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
     }
   }
 

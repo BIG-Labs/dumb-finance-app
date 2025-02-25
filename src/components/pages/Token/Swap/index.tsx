@@ -1,21 +1,34 @@
+import { ChevronDownIcon, HStack, Match, VStack } from "@big-components/ui"
+import { CoinIcon, SuccessIcon } from "assets"
+import ProfitText from "components/common/Profit/ProfitText"
+import { LoadingText, Spinner } from "components/utils/ui"
+import useSwap from "post/useSwap"
+import useTokensQuery from "queries/useTokensQuery"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { Img } from "react-image"
 import { Token } from "types/response"
 import Actions from "../Actions"
 import styles from "./Swap.module.scss"
-import { Fragment, useCallback, useMemo, useState } from "react"
-import { HStack, Match, VStack } from "@big-components/ui"
-import { Img } from "react-image"
-import { CoinIcon, SuccessIcon } from "assets"
-import useSwap from "post/useSwap"
-import { LoadingText, Spinner } from "components/utils/ui"
 
 interface SwapProps {
   token: Token
 }
 
 const Swap = ({ token }: SwapProps) => {
+  const { data } = useTokensQuery()
+
+  const tokens = useMemo(() => {
+    if (!data) return []
+
+    return data
+  }, [data])
+
   const { mutate, reset, status } = useSwap()
 
   const [amount, setAmount] = useState<number>()
+
+  const [open, setOpen] = useState(false)
+  const [to, setTo] = useState<Token>()
 
   const handleAmount = useCallback(
     (value: number) => {
@@ -47,98 +60,238 @@ const Swap = ({ token }: SwapProps) => {
     return amount * token.price
   }, [amount, token])
 
+  const outputTo = useMemo(() => {
+    if (!to || !amount) return 0
+
+    return output / to.price
+  }, [amount, output, to])
+
+  useEffect(() => {
+    setTo(tokens.filter((t) => t.symbol !== token.symbol)[0])
+  }, [token.symbol, tokens])
+
   return (
     <div className={styles.container}>
-      <Match
-        idle={() => (
-          <Fragment>
-            <Actions />
-            <div className={styles.asset}>
-              <HStack
-                fullWidth
-                alignItems="center"
-                justifyContent="space-between"
+      {open ? (
+        <VStack whole>
+          {tokens.map((token) => {
+            const {
+              address,
+              balance,
+              name,
+              symbol,
+              price,
+              icon,
+              percentChange,
+            } = token
+
+            return (
+              <div
+                key={address}
+                className={styles.token}
+                onClick={() => {
+                  setTo(token)
+                  setOpen(false)
+                }}
               >
-                <button className={styles.token}>
+                <HStack alignItems="center" gap={8}>
                   <Img
-                    src={token.icon}
-                    alt={token.symbol}
-                    width={18}
-                    height={18}
+                    src={icon}
+                    alt={name}
+                    width={22}
+                    height={22}
                     unloader={<CoinIcon width={24} height={24} />}
                   />
-                  <p className={styles.symbol}>{token.symbol}</p>
-                </button>
-                <p
-                  className={styles.balance}
-                  onClick={() => setAmount(token.balance)}
+                  <VStack alignItems="flex-start" gap={2}>
+                    <HStack alignItems="center" gap={4}>
+                      <p className={styles.name}>{name}</p>
+                      <ProfitText percentage={percentChange} size={11} />
+                    </HStack>
+                    <HStack alignItems="center" gap={6}>
+                      <p className={styles.symbol}>{symbol}</p>
+                      <div className={styles.line} />
+                      <p className={styles.price}>${price.toLocaleString()}</p>
+                    </HStack>
+                  </VStack>
+                </HStack>
+                <HStack alignItems="center" gap={8}>
+                  <VStack alignItems="flex-end" gap={2}>
+                    <p className={styles.balance}>{balance.toLocaleString()}</p>
+                    <p className={styles.value}>
+                      $
+                      {(balance * price).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </p>
+                  </VStack>
+                </HStack>
+              </div>
+            )
+          })}
+          <button
+            className={styles.button}
+            onClick={() => {
+              setOpen(false)
+            }}
+          >
+            Close
+          </button>
+        </VStack>
+      ) : (
+        <Match
+          value={status}
+          idle={() => (
+            <VStack whole gap={28}>
+              <Actions />
+              <div className={styles.asset}>
+                <HStack
+                  fullWidth
+                  alignItems="center"
+                  justifyContent="space-between"
                 >
-                  Available to trade:{" "}
-                  <span className={styles.amount}>
-                    {token.balance.toLocaleString(undefined, {
+                  <button className={styles.item}>
+                    <Img
+                      src={token.icon}
+                      alt={token.symbol}
+                      width={18}
+                      height={18}
+                      unloader={<CoinIcon width={24} height={24} />}
+                    />
+                    <p className={styles.symbol}>{token.symbol}</p>
+                    <ChevronDownIcon
+                      width={18}
+                      height={18}
+                      stroke="currentColor"
+                    />
+                  </button>
+                  <p
+                    className={styles.balance}
+                    onClick={() => handleAmount(token.balance)}
+                  >
+                    Balance:{" "}
+                    <span className={styles.amount}>
+                      {token.balance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
+                  </p>
+                </HStack>
+                <VStack fullWidth gap={8}>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    max={token.balance}
+                    value={amount}
+                    className={styles.input}
+                    onChange={(e) => handleAmount(Number(e.target.value))}
+                  />
+                  <small className={styles.output}>
+                    ≈ $
+                    {output.toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
-                  </span>
-                </p>
-              </HStack>
-              <input
-                type="number"
-                placeholder="0.00"
-                max={token.balance}
-                value={amount}
-                className={styles.input}
-                onChange={(e) => handleAmount(Number(e.target.value))}
-              />
-              <small className={styles.output}>
-                ≈ $
-                {output.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </small>
-            </div>
-            <button className={styles.button} onClick={() => mutate()}>
-              Trade
-            </button>
-          </Fragment>
-        )}
-        value={status}
-        error={() => null}
-        success={() => (
-          <VStack whole center className={styles.transitions}>
-            <VStack whole justifyContent="space-around">
-              <h1 className={styles.title}>Swapped!</h1>
-              <SuccessIcon
-                width={100}
-                height={100}
-                fill="var(--unifi-positive)"
-                className={styles.icon}
-              />
+                  </small>
+                </VStack>
+              </div>
+              <div className={styles.separator} />
+              <div className={styles.asset}>
+                <HStack
+                  fullWidth
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <button className={styles.item} onClick={() => setOpen(true)}>
+                    <Img
+                      src={to?.icon || ""}
+                      alt={to?.symbol}
+                      width={18}
+                      height={18}
+                      unloader={<CoinIcon width={24} height={24} />}
+                    />
+                    <p className={styles.symbol}>{to?.symbol}</p>
+                    <ChevronDownIcon
+                      width={18}
+                      height={18}
+                      stroke="currentColor"
+                    />
+                  </button>
+                  <p
+                    className={styles.balance}
+                    onClick={() => setAmount(to?.balance)}
+                  >
+                    Balance:{" "}
+                    <span className={styles.amount}>
+                      {token.balance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </span>
+                  </p>
+                </HStack>
+                <VStack fullWidth gap={8}>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    max={token.balance}
+                    value={outputTo}
+                    className={styles.input}
+                    disabled
+                  />
+                  <small className={styles.output}>
+                    ≈ $
+                    {output.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </small>
+                </VStack>
+              </div>
+              <button className={styles.button} onClick={() => mutate()}>
+                Trade
+              </button>
+            </VStack>
+          )}
+          error={() => null}
+          success={() => (
+            <VStack whole center className={styles.transitions}>
+              <VStack whole justifyContent="space-around">
+                <h1 className={styles.title}>Swapped!</h1>
+                <SuccessIcon
+                  width={100}
+                  height={100}
+                  fill="var(--unifi-positive)"
+                  className={styles.icon}
+                />
+                <h3 className={styles.message}>
+                  You have successfully swapped <strong>{token?.symbol}</strong>{" "}
+                  to <strong>{to?.symbol}</strong>!
+                </h3>
+              </VStack>
+              <button className={styles.button} onClick={reset}>
+                Back
+              </button>
+            </VStack>
+          )}
+          pending={() => (
+            <VStack
+              whole
+              center
+              justifyContent="space-around"
+              className={styles.transitions}
+            >
+              <LoadingText />
+              <Spinner />
               <h3 className={styles.message}>
-                You have successfully traded <strong>{token.symbol}</strong>!
+                Please wait while we swap <strong>{token.symbol}</strong> to{" "}
+                <strong>{to?.symbol}</strong>!
               </h3>
             </VStack>
-            <button className={styles.button} onClick={reset}>
-              Back
-            </button>
-          </VStack>
-        )}
-        pending={() => (
-          <VStack
-            whole
-            center
-            justifyContent="space-around"
-            className={styles.transitions}
-          >
-            <LoadingText />
-            <Spinner />
-            <h3 className={styles.message}>
-              Please wait while we trade <strong>{token.symbol}</strong>
-            </h3>
-          </VStack>
-        )}
-      />
+          )}
+        />
+      )}
     </div>
   )
 }

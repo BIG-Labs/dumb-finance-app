@@ -8,7 +8,7 @@ const buttons = ["trade", "lend", "borrow"]
 const cx = classNames.bind(styles)
 
 const Actions = () => {
-  const [active, setActive] = useState("deposit")
+  const [active, setActive] = useState("trade")
 
   return (
     <div className={styles.actions}>

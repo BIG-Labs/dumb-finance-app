@@ -74,61 +74,67 @@ const Swap = ({ token }: SwapProps) => {
     <div className={styles.container}>
       {open ? (
         <VStack whole>
-          {tokens.map((token) => {
-            const {
-              address,
-              balance,
-              name,
-              symbol,
-              price,
-              icon,
-              percentChange,
-            } = token
+          {tokens
+            .filter((t) => t.symbol !== token.symbol)
+            .map((token) => {
+              const {
+                address,
+                balance,
+                name,
+                symbol,
+                price,
+                icon,
+                percentChange,
+              } = token
 
-            return (
-              <div
-                key={address}
-                className={styles.token}
-                onClick={() => {
-                  setTo(token)
-                  setOpen(false)
-                }}
-              >
-                <HStack alignItems="center" gap={8}>
-                  <Img
-                    src={icon}
-                    alt={name}
-                    width={22}
-                    height={22}
-                    unloader={<CoinIcon width={24} height={24} />}
-                  />
-                  <VStack alignItems="flex-start" gap={2}>
-                    <HStack alignItems="center" gap={4}>
-                      <p className={styles.name}>{name}</p>
-                      <ProfitText percentage={percentChange} size={11} />
-                    </HStack>
-                    <HStack alignItems="center" gap={6}>
-                      <p className={styles.symbol}>{symbol}</p>
-                      <div className={styles.line} />
-                      <p className={styles.price}>${price.toLocaleString()}</p>
-                    </HStack>
-                  </VStack>
-                </HStack>
-                <HStack alignItems="center" gap={8}>
-                  <VStack alignItems="flex-end" gap={2}>
-                    <p className={styles.balance}>{balance.toLocaleString()}</p>
-                    <p className={styles.value}>
-                      $
-                      {(balance * price).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </p>
-                  </VStack>
-                </HStack>
-              </div>
-            )
-          })}
+              return (
+                <div
+                  key={address}
+                  className={styles.token}
+                  onClick={() => {
+                    setTo(token)
+                    setOpen(false)
+                  }}
+                >
+                  <HStack alignItems="center" gap={8}>
+                    <Img
+                      src={icon}
+                      alt={name}
+                      width={22}
+                      height={22}
+                      unloader={<CoinIcon width={24} height={24} />}
+                    />
+                    <VStack alignItems="flex-start" gap={2}>
+                      <HStack alignItems="center" gap={4}>
+                        <p className={styles.name}>{name}</p>
+                        <ProfitText percentage={percentChange} size={11} />
+                      </HStack>
+                      <HStack alignItems="center" gap={6}>
+                        <p className={styles.symbol}>{symbol}</p>
+                        <div className={styles.line} />
+                        <p className={styles.price}>
+                          ${price.toLocaleString()}
+                        </p>
+                      </HStack>
+                    </VStack>
+                  </HStack>
+                  <HStack alignItems="center" gap={8}>
+                    <VStack alignItems="flex-end" gap={2}>
+                      <p className={styles.balance}>
+                        {balance.toLocaleString()}
+                      </p>
+                      <p className={styles.value}>
+                        $
+                        {(balance * price).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </p>
+                    </VStack>
+                  </HStack>
+                </div>
+              )
+            })}
           <button
             className={styles.button}
             onClick={() => {
@@ -159,11 +165,6 @@ const Swap = ({ token }: SwapProps) => {
                       unloader={<CoinIcon width={24} height={24} />}
                     />
                     <p className={styles.symbol}>{token.symbol}</p>
-                    <ChevronDownIcon
-                      width={18}
-                      height={18}
-                      stroke="currentColor"
-                    />
                   </button>
                   <p
                     className={styles.balance}

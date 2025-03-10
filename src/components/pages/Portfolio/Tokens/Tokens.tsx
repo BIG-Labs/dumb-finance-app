@@ -41,7 +41,7 @@ const Tokens = () => {
             percentChange,
           }) => (
             <div
-              key={address}
+              key={`${address}-${id}`}
               className={styles.row}
               onClick={() =>
                 push(`/token/${id}`, undefined, { shallow: true })

@@ -1,0 +1,41 @@
+.settings {
+  position: relative;
+  display: inline-block;
+
+  .menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+    border: 1px solid var(--unifi-border);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--unifi-text);
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+
+    &.deposit {
+      width: 120px;
+    }
+  }
+
+  .list {
+    display: block;
+    position: absolute;
+    right: 0;
+    z-index: 3;
+    background-color: var(--unifi-secondary);
+    border: 1px solid var(--unifi-border);
+    margin-top: 8px;
+    width: 180px;
+    padding: 12px;
+    border-radius: 8px;
+  }
+}

@@ -1,0 +1,46 @@
+.container {
+  margin-top: 150px;
+  width: 400px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 26px;
+  border-radius: 12px;
+  gap: 28px;
+  background-color: var(--unifi-secondary);
+  border: 1px solid var(--unifi-border);
+  box-shadow: 0 0 5px 0 var(--unifi-secondary-hover);
+}
+
+.login {
+  .input {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--unifi-border);
+    border-radius: 8px;
+    padding: 12px;
+    outline: none;
+    color: var(--unifi-text);
+
+    &::placeholder {
+      color: var(--unifi-supporting);
+    }
+  }
+
+  .button {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--unifi-border);
+    color: var(--unifi-text);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+  }
+}

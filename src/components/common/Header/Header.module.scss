@@ -1,7 +1,7 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 42px;
+  justify-content: space-between;
   width: 100%;
   padding: 24px 12px;
   border-bottom: 1px solid var(--unifi-border);
@@ -72,6 +72,30 @@
 
     :not(:last-child) {
       border-right: 1px solid var(--unifi-border);
+    }
+  }
+
+  .menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+    border: 1px solid var(--unifi-border);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--unifi-text);
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+
+    &.deposit {
+      width: 120px;
     }
   }
 }

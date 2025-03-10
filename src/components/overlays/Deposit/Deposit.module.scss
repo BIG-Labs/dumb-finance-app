@@ -1,0 +1,107 @@
+.modal {
+  background-color: var(--unifi-background);
+  border-radius: 16px;
+  padding: 24px;
+  gap: 24px;
+
+  .title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--unifi-text);
+  }
+
+  .close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    border: 1px solid var(--unifi-border);
+    color: var(--unifi-text);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+  }
+
+  .qr {
+    width: fit-content;
+    height: 100%;
+    background: white;
+    padding: 16px;
+  }
+
+  .address {
+    cursor: pointer;
+
+    .value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--unifi-text);
+    }
+  }
+
+  .description {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--unifi-text);
+  }
+
+  .card {
+    width: fit-content;
+    text-align: right;
+    color: var(--unifi-supporting);
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      color: var(--unifi-text);
+    }
+  }
+
+  .input {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--unifi-border);
+    border-radius: 16px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--unifi-text);
+    outline: none;
+
+    &::placeholder {
+      color: var(--unifi-supporting);
+    }
+  }
+
+  .label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--unifi-text);
+  }
+
+  .button {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid var(--unifi-border);
+    border-radius: 16px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--unifi-text);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background-color: var(--unifi-secondary-hover);
+    }
+  }
+}

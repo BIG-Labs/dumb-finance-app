@@ -9,6 +9,7 @@ import { ReactComponent as DepositSVG } from "./icons/Deposit.svg"
 import { ReactComponent as WithdrawSVG } from "./icons/Withdraw.svg"
 import { ReactComponent as StakeSVG } from "./icons/Stake.svg"
 import { ReactComponent as PlusSVG } from "./icons/Plus.svg"
+import { ReactComponent as UserSVG } from "./icons/User.svg"
 import { ReactComponent as PositiveSVG } from "./icons/Positive.svg"
 import { ReactComponent as NegativeSVG } from "./icons/Negative.svg"
 import { ReactComponent as CoinSVG } from "./icons/Coin.svg"
@@ -17,6 +18,7 @@ import { ReactComponent as ArrowDownSVG } from "./icons/ArrowDown.svg"
 import { ReactComponent as LogoSVG } from "./icons/Logo.svg"
 import { ReactComponent as SuccessSVG } from "./icons/Success.svg"
 import { ReactComponent as ChevronRightSVG } from "./icons/ChevronRight.svg"
+import { ReactComponent as MenuSVG } from "./icons/Menu.svg"
 
 export const ChartIcon = ChartSVG
 export const TeamIcon = TeamSVG
@@ -34,6 +36,8 @@ export const NegativeIcon = NegativeSVG
 export const CoinIcon = CoinSVG
 export const LogoIcon = LogoSVG
 export const SuccessIcon = SuccessSVG
+export const UserIcon = UserSVG
+export const MenuIcon = MenuSVG
 
 // Arrows
 export const ArrowUpIcon = ArrowUpSVG

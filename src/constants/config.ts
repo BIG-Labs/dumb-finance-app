@@ -1,4 +1,4 @@
-type EnvVar = "apiUrl" | "isProduction" | "sessionSecret"
+type EnvVar = "apiUrl" | "isProduction"
 
 const getEnvDefault = (
   value: string | undefined,
@@ -9,16 +9,14 @@ const getEnvDefault = (
 
 const config = {
   apiUrl: getEnvDefault(process.env.NEXT_PUBLIC_API_URL, ""),
-  sessionSecret: getEnvDefault(process.env.NEXT_PUBLIC_SESSION_SECRET, ""),
   isProduction: process.env.NEXT_PUBLIC_NODE_ENV === "production",
 }
 
-const required: EnvVar[] = ["sessionSecret"]
+const required: EnvVar[] = ["apiUrl"]
 
 const descriptions: Record<EnvVar, string[]> = {
   apiUrl: ["Api URL", "NEXT_PUBLIC_API_URL"],
   isProduction: ["Production flag", "NEXT_PUBLIC_NODE_ENV"],
-  sessionSecret: ["Session secret", "NEXT_PUBLIC_SESSION_SECRET"],
 }
 
 for (const r of required) {

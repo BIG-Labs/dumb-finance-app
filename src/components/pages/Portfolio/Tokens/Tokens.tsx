@@ -6,6 +6,7 @@ import { Img } from "react-image"
 import { ChevronRightIcon, CoinIcon } from "assets"
 import ProfitText from "components/common/Profit/ProfitText"
 import { useRouter } from "next/router"
+import Skeleton from "react-loading-skeleton"
 
 const Tokens = () => {
   const { push } = useRouter()
@@ -29,65 +30,75 @@ const Tokens = () => {
         </HStack>
       </div>
       <div className={styles.tokens}>
-        {tokens.map(
-          ({
-            id,
-            address,
-            icon,
-            name,
-            symbol,
-            price,
-            balance,
-            percentChange,
-          }) => (
-            <div
-              key={`${address}-${id}`}
-              className={styles.row}
-              onClick={() =>
-                push(`/token/${id}`, undefined, { shallow: true })
-              }
-            >
-              <HStack alignItems="center" gap={8}>
-                <Img
-                  src={icon}
-                  alt={name}
-                  width={22}
-                  height={22}
-                  unloader={<CoinIcon width={24} height={24} />}
-                />
-                <VStack alignItems="flex-start" gap={2}>
-                  <HStack alignItems="center" gap={4}>
-                    <p className={styles.name}>{name}</p>
-                    <ProfitText percentage={percentChange} size={11} />
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className={styles.row}>
+                <Skeleton height={52} width={100} />
+              </div>
+            ))
+          : tokens.map(
+              ({
+                id,
+                address,
+                icon,
+                name,
+                symbol,
+                price,
+                balance,
+                percentChange,
+              }) => (
+                <div
+                  key={`${address}-${id}`}
+                  className={styles.row}
+                  onClick={() =>
+                    push(`/token/${id}`, undefined, { shallow: true })
+                  }
+                >
+                  <HStack alignItems="center" gap={8}>
+                    <Img
+                      src={icon}
+                      alt={name}
+                      width={22}
+                      height={22}
+                      unloader={<CoinIcon width={24} height={24} />}
+                    />
+                    <VStack alignItems="flex-start" gap={2}>
+                      <HStack alignItems="center" gap={4}>
+                        <p className={styles.name}>{name}</p>
+                        <ProfitText percentage={percentChange} size={11} />
+                      </HStack>
+                      <HStack alignItems="center" gap={6}>
+                        <p className={styles.symbol}>{symbol}</p>
+                        <div className={styles.line} />
+                        <p className={styles.price}>
+                          ${price.toLocaleString()}
+                        </p>
+                      </HStack>
+                    </VStack>
                   </HStack>
-                  <HStack alignItems="center" gap={6}>
-                    <p className={styles.symbol}>{symbol}</p>
-                    <div className={styles.line} />
-                    <p className={styles.price}>${price.toLocaleString()}</p>
+                  <HStack alignItems="center" gap={8}>
+                    <VStack alignItems="flex-end" gap={2}>
+                      <p className={styles.balance}>
+                        {balance.toLocaleString()}
+                      </p>
+                      <p className={styles.value}>
+                        $
+                        {(balance * price).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </p>
+                    </VStack>
+                    <ChevronRightIcon
+                      width={20}
+                      height={20}
+                      stroke="var(--unifi-supporting)"
+                      strokeWidth={1.5}
+                    />
                   </HStack>
-                </VStack>
-              </HStack>
-              <HStack alignItems="center" gap={8}>
-                <VStack alignItems="flex-end" gap={2}>
-                  <p className={styles.balance}>{balance.toLocaleString()}</p>
-                  <p className={styles.value}>
-                    $
-                    {(balance * price).toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </p>
-                </VStack>
-                <ChevronRightIcon
-                  width={20}
-                  height={20}
-                  stroke="var(--unifi-supporting)"
-                  strokeWidth={1.5}
-                />
-              </HStack>
-            </div>
-          )
-        )}
+                </div>
+              )
+            )}
       </div>
     </div>
   )

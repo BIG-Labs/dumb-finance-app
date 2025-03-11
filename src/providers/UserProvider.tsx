@@ -54,7 +54,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     return user
   }, [token])
 
-  const connected = useMemo(() => !!user && !!token, [user, token])
+  const connected = useMemo(() => !!token, [token])
 
   const value = useMemo(
     () => ({

@@ -12,7 +12,7 @@ interface LoginParams {
 
 const useLogin = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, setCookies] = useCookies(["token"])
+  const [_, setCookies] = useCookies(["token", "refreshToken"])
 
   return useMutation({
     mutationFn: async ({ email }: LoginParams) => {
@@ -45,14 +45,20 @@ const useLogin = () => {
       })
 
       if (res.status === 201) {
-        const { accessToken } = await res.json()
+        const { accessToken, refreshToken } = await res.json()
 
         const { exp } = jwtDecode(accessToken)
 
-        if (!exp) throw new Error("Token has no expiration date")
+        const { exp: refreshExp } = jwtDecode(refreshToken)
+
+        if (!exp || !refreshExp) throw new Error("Token has no expiration date")
 
         setCookies("token", accessToken, {
           expires: new Date(exp * 1000),
+        })
+
+        setCookies("refreshToken", refreshToken, {
+          expires: new Date(refreshExp * 100),
         })
 
         return true

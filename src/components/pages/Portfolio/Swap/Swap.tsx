@@ -1,7 +1,7 @@
 import useTokensQuery from "queries/useTokensQuery"
 import Actions from "./Actions/Actions"
 import styles from "./Swap.module.scss"
-import {  useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { HStack, Match, VStack } from "@big-components/ui"
 import { CoinIcon, SuccessIcon, SwapIcon } from "assets"
 import { Token } from "types/response"
@@ -10,6 +10,8 @@ import useSwap from "post/useSwap"
 import { LoadingText, Spinner } from "components/utils/ui"
 import { Img } from "react-image"
 import ProfitText from "components/common/Profit/ProfitText"
+import { Hex } from "viem"
+import { toChainAmount } from "@big-components/utils"
 
 const Swap = () => {
   const { data } = useTokensQuery()
@@ -166,7 +168,16 @@ const Swap = () => {
                 className={styles.button}
                 style={{ marginTop: "auto" }}
                 onClick={() => {
-                  mutate()
+                  mutate({
+                    tokenIn: {
+                      address: (from?.address || "") as Hex,
+                      amount: toChainAmount(amount || 0, from?.decimals || 0),
+                    },
+                    tokenOut: {
+                      address: (to?.address || "") as Hex,
+                      amount: 0,
+                    },
+                  })
                 }}
               >
                 Swap

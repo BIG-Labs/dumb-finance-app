@@ -9,6 +9,7 @@ import { Img } from "react-image"
 import { Token } from "types/response"
 import Actions from "../Actions"
 import styles from "./Swap.module.scss"
+import { toHex } from "viem"
 
 interface SwapProps {
   token: Token
@@ -250,7 +251,21 @@ const Swap = ({ token }: SwapProps) => {
                   </small>
                 </VStack>
               </div>
-              <button className={styles.button} onClick={() => mutate()}>
+              <button
+                className={styles.button}
+                onClick={() =>
+                  mutate({
+                    tokenIn: {
+                      address: toHex(token.address),
+                      amount: amount || 0,
+                    },
+                    tokenOut: {
+                      address: toHex(to?.address || ""),
+                      amount: outputTo,
+                    },
+                  })
+                }
+              >
                 Trade
               </button>
             </VStack>

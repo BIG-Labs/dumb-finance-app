@@ -1,11 +1,12 @@
 import { MenuIcon, UserIcon } from "assets"
 import { useEffect, useRef, useState } from "react"
 import styles from "./Settings.module.scss"
-import { HStack, VStack } from "@big-components/ui"
+import { CopyText, HStack, VStack } from "@big-components/ui"
 import { useUser } from "providers/UserProvider"
+import { truncate } from "@big-components/utils"
 
 const Settings = () => {
-  const { user, connected, disconnect } = useUser()
+  const { user, disconnect } = useUser()
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -35,7 +36,6 @@ const Settings = () => {
       <button
         className={styles.menu}
         onClick={() => setIsOpen((prev) => !prev)}
-        disabled={!connected}
       >
         <MenuIcon width={18} height={18} stroke="currentColor" />
         <UserIcon width={18} height={18} stroke="currentColor" />
@@ -55,7 +55,9 @@ const Settings = () => {
               />
               <VStack gap={4}>
                 <h1>{user?.username}</h1>
-                <small>0x1234...1234</small>
+                <CopyText value={user?.address || ""}>
+                  {truncate(user?.address || "", 4, 4)}
+                </CopyText>
               </VStack>
             </HStack>
             <button

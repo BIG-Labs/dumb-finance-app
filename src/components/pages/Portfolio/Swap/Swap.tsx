@@ -31,8 +31,8 @@ const Swap = () => {
   const [to, setTo] = useState<Token>()
 
   useEffect(() => {
-    setFrom(tokens[0])
-    setTo(tokens[1])
+    setFrom(tokens[tokens.findIndex((token) => token.symbol === "USDC")])
+    setTo(tokens[tokens.findIndex((token) => token.symbol === "AVAX")])
   }, [tokens])
 
   const handleSwap = useCallback(() => {

@@ -7,25 +7,22 @@ import {
   encodePacked,
   getContract,
   http,
-  parseAbi,
   toHex,
   encodeAbiParameters,
-  zeroAddress,
+  Call,
 } from "viem"
-import { Call, PackedUserOperation } from "./types"
 import {
-  DEFAULT_CALL_GAS_LIMIT,
-  DEFAULT_USER_OP,
-  DEFAULT_VERIFICATION_GAS_LIMIT,
-  packAccountGasLimits,
-} from "./constants"
-import { FACTORY_ABI, FACTORY_ADDRESS } from "constants/factory"
+  PackedUserOperation,
+  toPackedUserOperation,
+  UserOperation,
+} from "viem/account-abstraction"
 import { ENTRYPOINT_ABI, ENTRYPOINT_ADDRESS } from "./entryPoint"
-import { P256Credential } from "lib/web-auth/types"
 import { WebAuthn } from "lib/web-auth"
+import { FACTORY_ABI, FACTORY_ADDRESS } from "constants/factory"
+import { DEFAULT_USER_OP } from "./constants"
 
 export class UserOpBuilder {
-  public relayer: Hex = "0xDC78317f21EEefeE554F2c0F28CEbfa87e4c5BF5"
+  public relayer: Hex = "0x02FD9aD3b0623e36e84c3a0F8e1D81c3bbc155b1"
   public entryPoint: Hex = ENTRYPOINT_ADDRESS
   public chain: Chain
   public publicClient: PublicClient
@@ -37,7 +34,7 @@ export class UserOpBuilder {
       transport: http(),
     })
   }
-  
+
   // reference: https://ethereum.stackexchange.com/questions/150796/how-to-create-a-raw-erc-4337-useroperation-from-scratch-and-then-send-it-to-bund
   async buildUserOp({
     calls,
@@ -47,6 +44,7 @@ export class UserOpBuilder {
     keyId,
     publicKey,
     salt,
+    nonce,
   }: {
     calls: Call[]
     maxFeePerGas: bigint
@@ -55,22 +53,18 @@ export class UserOpBuilder {
     keyId: Hex
     publicKey: readonly [Hex, Hex]
     salt: Hex
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): Promise<{ userOperation: any; userOpHash: Hex }> {
-    // calculate nonce
-    const nonce = await this._getNonce(account)
-
+    nonce: bigint
+  }): Promise<{ userOperation: PackedUserOperation; userOpHash: Hex }> {
     // create callData
     const callData = this._addCallData(calls)
-
-    const gasFees = packAccountGasLimits(maxPriorityFeePerGas, maxFeePerGas)
 
     const bytecode = await this.publicClient.getCode({
       address: account,
     })
 
-    let initCode = toHex(new Uint8Array(0))
+    let initCode = undefined
     let initCodeGas = BigInt(0)
+
     if (bytecode === undefined) {
       // smart wallet does NOT already exists
       // calculate initCode and initCodeGas
@@ -78,18 +72,21 @@ export class UserOpBuilder {
     }
 
     // create user operation
-    const op: PackedUserOperation = {
+    const userOp = {
       ...DEFAULT_USER_OP,
       sender: account,
       nonce,
-      initCode,
       callData,
-      gasFees,
-      accountGasLimits: packAccountGasLimits(
-        DEFAULT_VERIFICATION_GAS_LIMIT + initCodeGas,
-        DEFAULT_CALL_GAS_LIMIT
-      ),
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      factory: FACTORY_ADDRESS,
+      factoryData: initCode,
     }
+
+    // TODO estimate callGasLimit, verificationGasLimit, preVerificationGas
+    userOp.verificationGasLimit += BigInt(initCodeGas) + BigInt(1_000_000)
+
+    const op = toPackedUserOperation(userOp as UserOperation)
 
     // get userOp hash (with signature == 0x) by calling the entry point contract
     const userOpHash = await this._getUserOpHash(op)
@@ -103,38 +100,26 @@ export class UserOpBuilder {
     // get signature from webauthn
     const signature = await this.getSignature(msgToSign, keyId)
 
-    const userOp = {
-      sender: op.sender,
-      nonce: toHex(op.nonce),
-      initCode: op.initCode,
-      callData: op.callData,
-      accountGasLimits: op.accountGasLimits,
-      preVerificationGas: op.preVerificationGas,
-      gasFees: op.gasFees,
-      paymasterAndData:
-        op.paymasterAndData === zeroAddress ? "0x" : op.paymasterAndData,
-      signature,
-    }
-
     return {
       userOperation: {
-        ...userOp,
+        ...op,
+        signature,
       },
       userOpHash,
     }
   }
 
   public async getSignature(msgToSign: Hex, keyId: Hex): Promise<Hex> {
-    const { p256Credential } = await WebAuthn.get(msgToSign)
-    const credentials = p256Credential as P256Credential
+    const { credential, metadata, signature } = await WebAuthn.get(msgToSign)
+    const id = toHex(new Uint8Array(Buffer.from(credential.id, "base64")))
 
-    if (p256Credential.rawId !== keyId) {
+    if (id !== keyId) {
       throw new Error(
         "Incorrect passkeys used for tx signing. Please sign the transaction with the correct logged-in account"
       )
     }
 
-    const signature = encodePacked(
+    const sig = encodePacked(
       ["uint8", "uint48", "bytes"],
       [
         1,
@@ -174,22 +159,28 @@ export class UserOpBuilder {
           ],
           [
             {
-              authenticatorData: credentials.authenticatorData,
-              clientDataJSON: JSON.stringify(credentials.clientData),
+              authenticatorData: metadata.authenticatorData,
+              clientDataJSON: metadata.clientDataJSON,
               challengeLocation: BigInt(23),
               responseTypeLocation: BigInt(1),
-              r: credentials.signature.r,
-              s: credentials.signature.s,
+              r: signature.r,
+              s: signature.s,
             },
           ]
         ),
       ]
     )
 
-    return signature
+    return sig
   }
 
   private _addCallData(calls: Call[]): Hex {
+    const formattedCalls = calls.map((call) => ({
+      to: call.to,
+      value: call.value ?? BigInt(0),
+      data: call.data ?? "0x",
+    }))
+
     return encodeFunctionData({
       abi: [
         {
@@ -198,7 +189,7 @@ export class UserOpBuilder {
               components: [
                 {
                   internalType: "address",
-                  name: "dest",
+                  name: "to",
                   type: "address",
                 },
                 {
@@ -224,20 +215,8 @@ export class UserOpBuilder {
         },
       ],
       functionName: "executeBatch",
-      args: [calls],
+      args: [formattedCalls],
     })
-  }
-
-  private async _getNonce(smartWalletAddress: Hex): Promise<bigint> {
-    const nonce: bigint = await this.publicClient.readContract({
-      address: this.entryPoint,
-      abi: parseAbi([
-        "function getNonce(address, uint192) view returns (uint256)",
-      ]),
-      functionName: "getNonce",
-      args: [smartWalletAddress, BigInt(0)],
-    })
-    return nonce
   }
 
   private async _getUserOpHash(userOp: PackedUserOperation): Promise<Hex> {
@@ -261,11 +240,6 @@ export class UserOpBuilder {
       args: [pubKey, salt],
     })
 
-    const initCode = encodePacked(
-      ["address", "bytes"], // types
-      [FACTORY_ADDRESS, data] // values
-    )
-
     const initCodeGas = await this.publicClient.estimateGas({
       account: this.relayer,
       to: FACTORY_ADDRESS,
@@ -273,7 +247,7 @@ export class UserOpBuilder {
     })
 
     return {
-      initCode,
+      initCode: data,
       initCodeGas,
     }
   }

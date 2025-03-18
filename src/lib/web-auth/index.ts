@@ -1,10 +1,13 @@
-import { randomBytes } from "crypto"
+import crypto from "crypto"
 import { Hex, toHex } from "viem"
-import { P256Credential, P256Signature } from "./types"
-import { AsnParser } from "@peculiar/asn1-schema"
-import { ECDSASigValue } from "@peculiar/asn1-ecc"
+import { Signature, WebAuthnP256 } from "ox"
+import { SignMetadata } from "ox/WebAuthnP256"
 
 export class WebAuthn {
+  private static _generateRandomBytes(): Buffer {
+    return crypto.randomBytes(16)
+  }
+
   public static isSupportedByBrowser(): boolean {
     return (
       window?.PublicKeyCredential !== undefined &&
@@ -12,102 +15,117 @@ export class WebAuthn {
     )
   }
 
+  public static async platformAuthenticatorIsAvailable(): Promise<boolean> {
+    if (
+      !this.isSupportedByBrowser() &&
+      typeof window.PublicKeyCredential
+        .isUserVerifyingPlatformAuthenticatorAvailable !== "function"
+    ) {
+      return false
+    }
+    return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
+  }
+
+  public static async isConditionalSupported(): Promise<boolean> {
+    if (
+      !this.isSupportedByBrowser() &&
+      typeof window.PublicKeyCredential.isConditionalMediationAvailable !==
+        "function"
+    ) {
+      return false
+    }
+    return await PublicKeyCredential.isConditionalMediationAvailable()
+  }
+
+  public static async isConditional() {
+    if (
+      typeof window.PublicKeyCredential !== "undefined" &&
+      typeof window.PublicKeyCredential.isConditionalMediationAvailable ===
+        "function"
+    ) {
+      const available =
+        await PublicKeyCredential.isConditionalMediationAvailable()
+
+      if (available) {
+        this.get()
+      }
+    }
+  }
+
+  public static async create({
+    email,
+    username,
+  }: {
+    username: string
+    email: string
+  }): Promise<{ credential: Credential | null; challenge: string }> {
+    this.isSupportedByBrowser()
+
+    const challenge = Uint8Array.from(
+      crypto.randomBytes(32).toString("hex"),
+      (c) => c.charCodeAt(0)
+    )
+
+    const options: PublicKeyCredentialCreationOptions = {
+      timeout: 60000,
+      rp: {
+        name: "WebAuthn Demo",
+        id: window.location.hostname,
+      },
+      user: {
+        id: this._generateRandomBytes(),
+        name: email,
+        displayName: username,
+      },
+      pubKeyCredParams: [
+        { alg: -7, type: "public-key" }, // ES256
+      ],
+      authenticatorSelection: {
+        requireResidentKey: true,
+        userVerification: "required",
+        authenticatorAttachment: "platform",
+      },
+      attestation: "direct",
+      challenge,
+    }
+
+    const credential = await navigator.credentials.create({
+      publicKey: options,
+    })
+
+    return {
+      credential,
+      challenge: clean(challenge),
+    }
+  }
+
   public static async get(challenge?: Hex): Promise<{
-    credential: Credential | null
+    credential: Credential
     challenge: string
-    p256Credential: P256Credential
+    metadata: SignMetadata
+    signature: Signature.Signature<false>
   }> {
     this.isSupportedByBrowser()
 
     const ch = challenge
       ? Buffer.from(challenge.slice(2), "hex")
-      : Uint8Array.from(randomBytes(32).toString("hex"), (c) => c.charCodeAt(0))
+      : Uint8Array.from(crypto.randomBytes(32).toString("hex"), (c) =>
+          c.charCodeAt(0)
+        )
 
-    const options: PublicKeyCredentialRequestOptions = {
-      timeout: 60000,
-      challenge: ch,
+    const { metadata, raw, signature } = await WebAuthnP256.sign({
+      challenge: toHex(ch),
       rpId: window.location.hostname,
-      userVerification: "preferred",
-    } as PublicKeyCredentialRequestOptions
-
-    const credential = await navigator.credentials.get({
-      publicKey: options,
+      userVerification: "required",
     })
 
-    const cred = credential as unknown as {
-      rawId: ArrayBuffer
-      response: {
-        clientDataJSON: ArrayBuffer
-        authenticatorData: ArrayBuffer
-        signature: ArrayBuffer
-        userHandle: ArrayBuffer
-      }
-    }
-
-    const utf8Decoder = new TextDecoder("utf-8")
-
-    const decodedClientData = utf8Decoder.decode(cred.response.clientDataJSON)
-    const clientDataObj = JSON.parse(decodedClientData)
-
-    const authenticatorData = toHex(
-      new Uint8Array(cred.response.authenticatorData)
-    )
-    const signature = parseSignature(new Uint8Array(cred?.response?.signature))
-
-    const p256Credential: P256Credential = {
-      rawId: toHex(new Uint8Array(cred.rawId)),
-      clientData: {
-        type: clientDataObj.type,
-        challenge: clientDataObj.challenge,
-        origin: clientDataObj.origin,
-        crossOrigin: clientDataObj.crossOrigin,
-      },
-      authenticatorData,
-      signature,
-    }
-
     return {
-      credential,
+      credential: raw,
+      metadata,
+      signature,
       challenge: clean(ch),
-      p256Credential,
     }
   }
-}
-
-export function parseSignature(signature: Uint8Array): P256Signature {
-  const parsedSignature = AsnParser.parse(signature, ECDSASigValue)
-  let rBytes = new Uint8Array(parsedSignature.r)
-  let sBytes = new Uint8Array(parsedSignature.s)
-
-  if (shouldRemoveLeadingZero(rBytes)) {
-    rBytes = rBytes.slice(1)
-  }
-  if (shouldRemoveLeadingZero(sBytes)) {
-    sBytes = sBytes.slice(1)
-  }
-  const finalSignature = concatUint8Arrays([rBytes, sBytes])
-  return {
-    r: BigInt(toHex(finalSignature.slice(0, 32))),
-    s: BigInt(toHex(finalSignature.slice(32))),
-  }
-}
-
-export function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {
-  let pointer = 0
-  const totalLength = arrays.reduce((prev, curr) => prev + curr.length, 0)
-
-  const toReturn = new Uint8Array(totalLength)
-
-  arrays.forEach((arr) => {
-    toReturn.set(arr, pointer)
-    pointer += arr.length
-  })
-
-  return toReturn
-}
-
-export function shouldRemoveLeadingZero(bytes: Uint8Array): boolean {
-  return bytes[0] === 0x0 && (bytes[1] & (1 << 7)) !== 0
 }
 
 export function clean(challenge: Uint8Array): string {

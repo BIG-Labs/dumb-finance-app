@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 import config from "constants/config"
 import { TRADERJOE_ABI, TRADERJOE_ROUTER_ADDRESS } from "constants/factory"
 import { UserOpBuilder } from "lib/smartWallet/builder"
+import { ENTRYPOINT_ADDRESS } from "lib/smartWallet/entryPoint"
 import { useUser } from "providers/UserProvider"
 import { useState } from "react"
 import {
@@ -10,7 +11,10 @@ import {
   EstimateFeesPerGasReturnType,
   Hex,
 } from "viem"
+import { entryPoint07Abi } from "viem/account-abstraction"
+import { readContract } from "viem/actions"
 import { avalancheFuji } from "viem/chains"
+import { usePublicClient } from "wagmi"
 
 interface SwapProps {
   tokenIn: {
@@ -31,11 +35,20 @@ const useSwap = () => {
     })
   })
 
+  const client = usePublicClient()
+
   return useMutation({
     mutationFn: async ({ tokenIn, tokenOut }: SwapProps) => {
-      if (!user) {
+      if (!user || !client) {
         return
       }
+
+      const nonce = await readContract(client, {
+        abi: entryPoint07Abi,
+        address: ENTRYPOINT_ADDRESS,
+        functionName: "getNonce",
+        args: [user.address, BigInt(0)],
+      })
 
       const {
         maxFeePerGas,
@@ -51,7 +64,7 @@ const useSwap = () => {
         args: [TRADERJOE_ROUTER_ADDRESS, BigInt(tokenIn.amount)],
       })
 
-      const data = encodeFunctionData({
+      const swapData = encodeFunctionData({
         abi: TRADERJOE_ABI,
         functionName: "swapExactTokensForTokens",
         args: [
@@ -68,15 +81,16 @@ const useSwap = () => {
       })
 
       const { userOperation, userOpHash } = await builderOp.buildUserOp({
+        nonce: nonce || BigInt(0),
         calls: [
           {
             data: allowanceData,
-            dest: tokenIn.address,
+            to: tokenIn.address,
             value: BigInt(0),
           },
           {
-            data,
-            dest: TRADERJOE_ROUTER_ADDRESS,
+            data: swapData,
+            to: TRADERJOE_ROUTER_ADDRESS,
             value: BigInt(0),
           },
         ],

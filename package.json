@@ -30,7 +30,8 @@
     "react-loading-skeleton": "^3.5.0",
     "react-qr-code": "^2.0.15",
     "sass": "^1.83.4",
-    "viem": "^2.23.10"
+    "viem": "^2.23.10",
+    "wagmi": "^2.14.15"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -10,12 +10,15 @@ import {
 import styles from "./Deposit.module.scss"
 import QRCode from "react-qr-code"
 import { Fragment, useState } from "react"
+import { useUser } from "providers/UserProvider"
 
 type DepositOverlayProps = ClosableComponentProps
 
 const DepositOverlay = ({ onClose }: DepositOverlayProps) => {
-  const [value] = useState("0x1234567890")
+  const { user } = useUser()
   const [view, setView] = useState<"qr" | "card">("qr")
+  
+  const userAddress = user?.address || ""
 
   return (
     <Modal className={styles.modal}>
@@ -34,11 +37,11 @@ const DepositOverlay = ({ onClose }: DepositOverlayProps) => {
                 <QRCode
                   size={225}
                   style={{ width: "100%", height: "auto" }}
-                  value={value}
+                  value={userAddress}
                   viewBox="0 0 225 225"
                 />
               </div>
-              <CopyText value={value}>{value}</CopyText>
+              <CopyText value={userAddress}>{userAddress}</CopyText>
               <p className={styles.description}>
                 Scan the QR code or copy the address to deposit funds.
               </p>

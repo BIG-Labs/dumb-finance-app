@@ -4,20 +4,13 @@ import { useRef, useState } from "react"
 import styles from "./Chart.module.scss"
 import { HStack, VStack } from "@big-components/ui"
 import classNames from "classnames/bind"
-import ProfitText from "components/common/Profit/ProfitText"
 import { DepositIcon, WithdrawIcon } from "assets"
+import Link from "next/link"
 
 const cx = classNames.bind(styles)
 
 const timespans = ["1H", "1D", "1W", "1M", "1Y"] as const
 
-const timespanLabels = {
-  "1H": "hour",
-  "1D": "day",
-  "1W": "week",
-  "1M": "month",
-  "1Y": "year",
-}
 
 const Chart = () => {
   const [activeTimespan, setActiveTimespan] =
@@ -89,11 +82,7 @@ const Chart = () => {
     series: [
       {
         name: "Balance",
-        data: Array.from({ length: 50 }, () => {
-          const number = [580, 600, 520]
-
-          return number[Math.floor(Math.random() * number.length)]
-        }),
+        data: Array(50).fill(0),
         color: "var(--unifi-positive)",
         type: "areaspline",
       },
@@ -112,15 +101,28 @@ const Chart = () => {
           gap={8}
           className={styles.buttons}
         >
-          <button>
-            <DepositIcon
-              width={16}
-              height={16}
-              stroke="var(--unifi-text)"
-              strokeWidth={2}
-            />
-            <p>Deposit</p>
-          </button>
+          <VStack gap={4} alignItems="center">
+            <button>
+              <DepositIcon
+                width={16}
+                height={16}
+                stroke="var(--unifi-text)"
+                strokeWidth={2}
+              />
+              <p>Deposit</p>
+            </button>
+            <small style={{ fontSize: "10px", color: "var(--unifi-supporting)" }}>
+              First get some AVAX in testnet{" "}
+              <Link 
+                href="https://core.app/tools/testnet-faucet/?subnet=c&token=c"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "underline" }}
+              >
+                here
+              </Link>
+            </small>
+          </VStack>
           <button>
             <WithdrawIcon
               width={16}
@@ -133,11 +135,8 @@ const Chart = () => {
         </HStack>
         <VStack alignItems="center" gap={4}>
           <small className={styles.title}>Portfolio</small>
-          <h1 className={styles.balance}>$37,394.90</h1>
-          <HStack alignItems="center" gap={4}>
-            <ProfitText percentage={0.5} size={14} />
-            <small>past {timespanLabels[activeTimespan]}</small>
-          </HStack>
+          <h1 className={styles.balance}>$0.00</h1>
+          <small style={{ color: "var(--unifi-supporting)" }}>Testnet Prices Not Live Yet</small>
         </VStack>
       </VStack>
       <HighchartsReact

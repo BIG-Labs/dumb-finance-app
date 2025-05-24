@@ -1,4 +1,3 @@
-import { rarelyChangingQueryOptions } from "@big-components/utils"
 import { useQuery } from "@tanstack/react-query"
 
 const useCheckPlatformAvailability = () => {
@@ -10,7 +9,6 @@ const useCheckPlatformAvailability = () => {
 
       return available
     },
-    ...rarelyChangingQueryOptions,
   })
 }
 

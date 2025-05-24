@@ -1,29 +1,38 @@
 import { useMutation } from "@tanstack/react-query"
 import config from "constants/config"
-import { TRADERJOE_ABI, TRADERJOE_ROUTER_ADDRESS } from "constants/factory"
+import {
+  ROUTER_ABI,
+  ROUTER_ADDRESS,
+  tokenHomesAddress,
+  tokenRemotesAddress,
+} from "constants/factory"
 import { UserOpBuilder } from "lib/smartWallet/builder"
 import { ENTRYPOINT_ADDRESS } from "lib/smartWallet/entryPoint"
 import { useUser } from "providers/UserProvider"
 import { useState } from "react"
 import {
+  encodeAbiParameters,
   encodeFunctionData,
   erc20Abi,
   EstimateFeesPerGasReturnType,
   Hex,
+  zeroAddress,
 } from "viem"
 import { entryPoint07Abi } from "viem/account-abstraction"
 import { readContract } from "viem/actions"
-import { avalancheFuji } from "viem/chains"
+import { avalanche } from "viem/chains"
 import { usePublicClient } from "wagmi"
 
 interface SwapProps {
   tokenIn: {
     address: Hex
-    amount: number
+    amount: bigint
+    chainId: number
   }
   tokenOut: {
     address: Hex
-    amount: number
+    amount: bigint
+    chainId: number
   }
 }
 
@@ -31,7 +40,7 @@ const useSwap = () => {
   const { user } = useUser()
   const [builderOp] = useState(() => {
     return new UserOpBuilder({
-      ...avalancheFuji,
+      ...avalanche,
     })
   })
 
@@ -47,7 +56,7 @@ const useSwap = () => {
         abi: entryPoint07Abi,
         address: ENTRYPOINT_ADDRESS,
         functionName: "getNonce",
-        args: [user.address, BigInt(0)],
+        args: [user.address || zeroAddress, BigInt(0)],
       })
 
       const {
@@ -56,27 +65,59 @@ const useSwap = () => {
       }: EstimateFeesPerGasReturnType =
         await builderOp.publicClient.estimateFeesPerGas()
 
-      const tenMinutesFromNow = Math.floor(Date.now() / 1000) + 600
+      const deadline = Date.parse("2030-01-01") / 1000
 
       const allowanceData = encodeFunctionData({
         abi: erc20Abi,
         functionName: "approve",
-        args: [TRADERJOE_ROUTER_ADDRESS, BigInt(tokenIn.amount)],
+        args: [ROUTER_ADDRESS, tokenIn.amount],
       })
 
-      const swapData = encodeFunctionData({
-        abi: TRADERJOE_ABI,
-        functionName: "swapExactTokensForTokens",
-        args: [
-          BigInt(tokenIn.amount),
+      const swapCall = encodeAbiParameters(
+        [
+          { name: "amountIn", type: "uint256" },
+          { name: "amountOutMin", type: "uint256" },
+          { name: "path", type: "address[]" },
+          { name: "to", type: "address" },
+          { name: "deadline", type: "uint256" },
+        ],
+        [
+          tokenIn.amount,
           BigInt(0),
+          [tokenIn.address, tokenOut.address],
+          user.address as Hex,
+          BigInt(deadline),
+        ]
+      )
+
+      const swapData = encodeFunctionData({
+        abi: ROUTER_ABI,
+        functionName: "start",
+        args: [
+          tokenIn.address,
+          tokenIn.amount,
           {
-            pairBinSteps: [BigInt(10)],
-            tokenPath: [tokenIn.address, tokenOut.address],
-            versions: [1],
+            receiver: user.address as Hex,
+            hops: [
+              {
+                action: 0,
+                requiredGasLimit: BigInt(500000),
+                recipientGasLimit: BigInt(250000),
+                trade: swapCall,
+                bridgePath: {
+                  bridgeSourceChain: tokenHomesAddress[tokenOut.address] as Hex,
+                  sourceBridgeIsNative: false,
+                  bridgeDestinationChain: tokenRemotesAddress[tokenOut.address],
+                  cellDestinationChain: zeroAddress,
+                  destinationBlockchainID:
+                    "0x898b8aa8353f2b79ee1de07c36474fcee339003d90fa06ea3a90d9e88b7d7c33",
+                  teleporterFee: BigInt(0),
+                  secondaryTeleporterFee: BigInt(0),
+                },
+              },
+            ],
           },
-          user.address,
-          BigInt(tenMinutesFromNow),
+          zeroAddress,
         ],
       })
 
@@ -90,7 +131,7 @@ const useSwap = () => {
           },
           {
             data: swapData,
-            to: TRADERJOE_ROUTER_ADDRESS,
+            to: ROUTER_ADDRESS,
             value: BigInt(0),
           },
         ],
@@ -119,8 +160,6 @@ const useSwap = () => {
           }
         ),
       })
-
-      return true
     },
   })
 }

@@ -1,4 +1,3 @@
-import { rarelyChangingQueryOptions } from "@big-components/utils"
 import { useQuery } from "@tanstack/react-query"
 import { tokens } from "constants/utils"
 import { Token } from "types/response"
@@ -15,7 +14,6 @@ const useTokenQuery = (id: number) => {
 
       return promise
     },
-    ...rarelyChangingQueryOptions,
   })
 }
 

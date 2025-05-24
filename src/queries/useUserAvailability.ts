@@ -1,4 +1,3 @@
-import { rarelyChangingQueryOptions } from "@big-components/utils"
 import { useQuery } from "@tanstack/react-query"
 import config from "constants/config"
 
@@ -28,7 +27,6 @@ const useUserAvailabilityQuery = ({
 
       throw new Error("Something went wrong")
     },
-    ...rarelyChangingQueryOptions,
   })
 }
 

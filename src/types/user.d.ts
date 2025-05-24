@@ -1,6 +1,6 @@
 import { Hex } from "viem"
 
-export type User = {
+type User = {
   address: Hex
   exp: number
   iat: number

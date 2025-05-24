@@ -5,12 +5,13 @@ import styles from "./Chart.module.scss"
 import { HStack, VStack } from "@big-components/ui"
 import classNames from "classnames/bind"
 import { DepositIcon, WithdrawIcon } from "assets"
-import Link from "next/link"
+import Button from "components/common/Button"
+import ProfitText from "components/common/Profit/ProfitText"
+import { toUSD } from "components/utils/math"
 
 const cx = classNames.bind(styles)
 
 const timespans = ["1H", "1D", "1W", "1M", "1Y"] as const
-
 
 const Chart = () => {
   const [activeTimespan, setActiveTimespan] =
@@ -26,7 +27,7 @@ const Chart = () => {
       spacingBottom: 0,
       spacingLeft: 0,
       spacingRight: 0,
-      spacingTop: -35,
+      spacingTop: 0,
     },
     title: {
       text: "",
@@ -35,7 +36,7 @@ const Chart = () => {
       crosshair: {
         width: 1,
         color: "var(--unifi-supporting)",
-        dashStyle: "Dot",
+        dashStyle: "Dash",
         zIndex: 0,
       },
       labels: {
@@ -46,6 +47,16 @@ const Chart = () => {
       lineWidth: 0,
       floor: 0,
       tickLength: 0,
+    },
+    tooltip: {
+      shape: "rect",
+      shadow: false,
+      borderWidth: 0,
+      backgroundColor: "var(--unifi-secondary-hover)",
+      borderColor: "var(--unifi-border)",
+      style: {
+        color: "var(--unifi-text)",
+      },
     },
     yAxis: {
       title: {
@@ -62,7 +73,6 @@ const Chart = () => {
         zIndex: 0,
       },
       floor: 0,
-      max: 601,
       min: 0,
     },
     legend: {
@@ -82,8 +92,23 @@ const Chart = () => {
     series: [
       {
         name: "Balance",
-        data: Array(50).fill(0),
-        color: "var(--unifi-positive)",
+        data: [
+          [1746835200000, 1034.25], // 2025-05-10
+          [1746921600000, 1042.87], // 2025-05-11
+          [1747008000000, 1029.33], // 2025-05-12
+          [1747094400000, 1050.12], // 2025-05-13
+          [1747180800000, 1078.55], // 2025-05-14
+          [1747267200000, 1067.2], // 2025-05-15
+          [1747353600000, 1081.47], // 2025-05-16
+          [1747440000000, 1094.03], // 2025-05-17
+          [1747526400000, 1102.6], // 2025-05-18
+          [1747612800000, 1089.9], // 2025-05-19
+          [1747699200000, 1115.45], // 2025-05-20
+          [1747785600000, 1130.77], // 2025-05-21
+          [1747872000000, 1125.88], // 2025-05-22
+          [1747958400000, 1142.34], // 2025-05-23
+        ],
+        color: "var(--unifi-primary)",
         type: "areaspline",
       },
     ],
@@ -101,42 +126,29 @@ const Chart = () => {
           gap={8}
           className={styles.buttons}
         >
-          <VStack gap={4} alignItems="center">
-            <button>
-              <DepositIcon
-                width={16}
-                height={16}
-                stroke="var(--unifi-text)"
-                strokeWidth={2}
-              />
-              <p>Deposit</p>
-            </button>
-            <small style={{ fontSize: "10px", color: "var(--unifi-supporting)" }}>
-              First get some AVAX in testnet{" "}
-              <Link 
-                href="https://core.app/tools/testnet-faucet/?subnet=c&token=c"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: "underline" }}
-              >
-                here
-              </Link>
-            </small>
-          </VStack>
-          <button>
+          <Button animation>
+            <DepositIcon
+              width={16}
+              height={16}
+              stroke="currentColor"
+              strokeWidth={2}
+            />
+            <p>Deposit</p>
+          </Button>
+          <Button animation>
             <WithdrawIcon
               width={16}
               height={16}
-              stroke="var(--unifi-text)"
+              stroke="currentColor"
               strokeWidth={2}
             />
             <p>Withdraw</p>
-          </button>
+          </Button>
         </HStack>
-        <VStack alignItems="center" gap={4}>
+        <VStack alignItems="center">
           <small className={styles.title}>Portfolio</small>
-          <h1 className={styles.balance}>$0.00</h1>
-          <small style={{ color: "var(--unifi-supporting)" }}>Testnet Prices Not Live Yet</small>
+          <h1 className={styles.balance}>{toUSD(Math.random() * 1000)}</h1>
+          <ProfitText percentage={Math.random() * 10} size={14} />
         </VStack>
       </VStack>
       <HighchartsReact
@@ -144,17 +156,17 @@ const Chart = () => {
         options={options}
         ref={chartComponentRef}
       />
-      <HStack alignItems="center" className={styles.timespan}>
+      <div className={styles.timespan}>
         {timespans.map((timespan) => (
-          <div
+          <button
             key={timespan}
             className={cx("item", { active: timespan === activeTimespan })}
             onClick={() => setActiveTimespan(timespan)}
           >
-            <button>{timespan}</button>
-          </div>
+            {timespan}
+          </button>
         ))}
-      </HStack>
+      </div>
     </div>
   )
 }

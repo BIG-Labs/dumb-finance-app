@@ -9,10 +9,10 @@ import { Img } from "react-image"
 import { Token } from "types/response"
 import Actions from "../Actions"
 import styles from "./Swap.module.scss"
-import { toHex } from "viem"
+import { parseUnits, toHex } from "viem"
 
 interface SwapProps {
-  token: Token
+  token: Token & { balance: number }
 }
 
 const Swap = ({ token }: SwapProps) => {
@@ -220,10 +220,7 @@ const Swap = ({ token }: SwapProps) => {
                       stroke="currentColor"
                     />
                   </button>
-                  <p
-                    className={styles.balance}
-                    onClick={() => setAmount(to?.balance)}
-                  >
+                  <p className={styles.balance}>
                     Balance:{" "}
                     <span className={styles.amount}>
                       {token.balance.toLocaleString(undefined, {
@@ -257,11 +254,19 @@ const Swap = ({ token }: SwapProps) => {
                   mutate({
                     tokenIn: {
                       address: toHex(token.address),
-                      amount: amount || 0,
+                      amount: parseUnits(
+                        amount?.toString() ?? "0",
+                        token.decimals
+                      ),
+                      chainId: token.chainId,
                     },
                     tokenOut: {
                       address: toHex(to?.address || ""),
-                      amount: outputTo,
+                      amount: parseUnits(
+                        outputTo?.toString() ?? "0",
+                        token.decimals
+                      ),
+                      chainId: to?.chainId ?? 0,
                     },
                   })
                 }

@@ -17,11 +17,7 @@ const Stats = ({ token }: StatsProps) => {
       </div>
       <div className={styles.item}>
         <h1 className={styles.title}>TVL</h1>
-        <p className={styles.value}>${token.tvl.toLocaleString()}</p>
-      </div>
-      <div className={styles.item}>
-        <h1 className={styles.title}>APR</h1>
-        <p className={styles.value}>{token.apr}%</p>
+        <p className={styles.value}>${"0".toLocaleString()}</p>
       </div>
       <div className={styles.item}>
         <h1 className={styles.title}>Daily change</h1>

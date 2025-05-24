@@ -1,51 +1,53 @@
 import config from "constants/config"
+import { Candle, Route, Token } from "./response"
+import { Hex } from "viem"
 
-export const gatewayURL = `${config.apiUrl}`
+const apiURL = config.apiUrl
 
-export const gatewayEndpoints = [
-  "statistics",
-  "arbitrages",
-  "tokens",
-  "token-statistics",
-  "daily-token-statistics",
-  "sender-statistics",
-] as const
-export type GatewayEndpoints = (typeof gatewayEndpoints)[number]
+const endpoints = {
+  tokens: "/tokens",
+  prices: "/prices",
+  route: "/route",
+  balance: "/balance",
+} as const
 
-export const gatewayEndpointsPath: Record<
-  GatewayEndpoints,
-  (param?: string) => string
-> = {
-  statistics: (period) => `/statistics/${period}`,
-  arbitrages: () => `/arbitrages`,
-  tokens: () => `/tokens`,
-  "token-statistics": (period) => `/token-statistics/${period}`,
-  "daily-token-statistics": (period) => `/token-statistics/${period}/daily`,
-  "sender-statistics": (period) => `/sender-statistics/${period}`,
-}
+type Endpoints = keyof typeof endpoints
 
-export interface GatewayEndpointsInput {
-  statistics: undefined
-  arbitrages: Partial<{
-    address: string
-    page: number
-    per_page: number
-    sortBy: "-usd_profit" | "usd_profit"
-  }>
-  tokens: Partial<{
-    name: string
-    page: number
-    per_page: number
-  }>
-  "token-statistics": Partial<{
-    address: string
-    page: number
-    per_page: number
-    sortBy: "total_arbitrages" | "profit_usd" | "-profit_usd"
-  }>
-  "daily-token-statistics": { per_page: number }
-  "sender-statistics": {
-    per_page: number
-    sortBy: "total_arbitrages" | "profit_usd" | "-profit_usd"
+interface EndpointOptions {
+  tokens: {
+    method: "GET"
+    query?: { symbol: string }
+    response: Array<Token>
+  }
+  prices: {
+    method: "GET"
+    query: { symbol: string }
+    body?: {
+      timeRange?: TimeRange
+    }
+    response: Array<Candle>
+  }
+  route: {
+    method: "GET"
+    query?: never
+    body: {
+      fromToken: Hex
+      toToken: Hex
+      amount: string
+      chain: string
+    }
+    response: Route
+  }
+  balance: {
+    method: "GET"
+    query?: never
+    body: {
+      user: Hex
+      timeRange?: TimeRange
+    }
+    response: Array<[number, number]>
   }
 }
+
+export { apiURL, endpoints }
+export type { Endpoints, EndpointOptions }

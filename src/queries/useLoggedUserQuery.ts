@@ -1,4 +1,3 @@
-import { rarelyChangingQueryOptions } from "@big-components/utils"
 import { useQuery } from "@tanstack/react-query"
 import { useCookies } from "react-cookie"
 
@@ -12,7 +11,6 @@ const useLoggedUserQuery = () => {
 
       return true
     },
-    ...rarelyChangingQueryOptions,
   })
 }
 

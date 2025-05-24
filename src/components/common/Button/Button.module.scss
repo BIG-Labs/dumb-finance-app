@@ -1,11 +1,33 @@
 .button {
   background-color: var(--unifi-primary);
-  color: var(--unifi-text);
   border: 1px solid var(--unifi-border);
-  padding: 8px 12px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
   outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin-top: auto;
+
+  &:hover {
+    background-color: var(--unifi-primary-hover);
+
+    &.animation {
+      transform: scale(1.05);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &.block {
+    width: 100%;
+  }
 }

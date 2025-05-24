@@ -12,13 +12,15 @@ import {
 import { useCookies } from "react-cookie"
 import { User } from "types/user"
 
-const Context = createContext<{
+interface UserContext {
   connected: boolean
   user: User | null
   connect: (token: string) => void
   disconnect: () => void
   loading: boolean
-}>({
+}
+
+const Context = createContext<UserContext>({
   connected: false,
   user: null,
   connect: () => {},
@@ -31,7 +33,8 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     "token",
     "refreshToken",
   ])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
 
   const disconnect = useCallback(() => {
     return removeCookies("token")
@@ -44,10 +47,10 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     [setCookies]
   )
 
-  const user = useMemo(() => {
+  const connectedUser = useMemo(() => {
     if (!token) return null
 
-    const user: User = jwtDecode(token)
+    const user = jwtDecode<User>(token)
 
     return {
       ...user,
@@ -55,45 +58,56 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [token])
 
-  const connected = useMemo(() => !!token, [token])
+  const connected = useMemo(() => !!user, [user])
+
+  useEffect(() => {
+    setUser(connectedUser)
+  }, [connectedUser])
 
   const refresh = useCallback(async () => {
     if (!user) return
 
-    const res = await fetch(`${config.apiUrl}/auth/refresh`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        token: refreshToken,
-      }),
-    })
-
-    if (res.status === 201) {
-      const { accessToken, refreshToken } = await res.json()
-
-      const { exp } = jwtDecode(accessToken)
-
-      const { exp: refreshExp } = jwtDecode(refreshToken)
-
-      if (!exp || !refreshExp) throw new Error("Token has no expiration date")
-
-      setCookies("token", accessToken, {
-        expires: new Date(exp * 1000),
+    try {
+      const res = await fetch(`${config.apiUrl}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          token: refreshToken,
+        }),
       })
 
-      setCookies("refreshToken", refreshToken, {
-        expires: new Date(refreshExp * 100),
-      })
+      if (res.status === 201) {
+        const { accessToken, refreshToken } = await res.json()
+
+        const { exp } = jwtDecode(accessToken)
+
+        const { exp: refreshExp } = jwtDecode(refreshToken)
+
+        if (!exp || !refreshExp) throw new Error("Token has no expiration date")
+
+        setCookies("token", accessToken, {
+          expires: new Date(exp * 1000),
+        })
+
+        setCookies("refreshToken", refreshToken, {
+          expires: new Date(refreshExp * 1000),
+        })
+      }
+    } catch {
+      disconnect()
     }
 
     setLoading(false)
-  }, [refreshToken, setCookies, token, user])
+  }, [disconnect, refreshToken, setCookies, token, user])
 
   useEffect(() => {
-    if (!!user && user.exp * 1000 < Date.now()) {
+    const expiresSoon = !!user && user.exp * 1000 - Date.now() < 60_000
+
+    if (expiresSoon) {
       refresh()
     } else {
       setLoading(false)

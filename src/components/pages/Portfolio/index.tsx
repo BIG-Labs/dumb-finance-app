@@ -1,7 +1,7 @@
 import { HStack, VStack } from "@big-components/ui"
-import Chart from "./Chart/Chart"
-import Swap from "./Swap/Swap"
-import Tokens from "./Tokens/Tokens"
+import Chart from "./Chart"
+import Swap from "./Swap"
+import Tokens from "./Tokens"
 
 const Portfolio = () => {
   return (

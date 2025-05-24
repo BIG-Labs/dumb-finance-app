@@ -1,7 +1,7 @@
 import { Center } from "@big-components/ui"
 import Auth from "components/common/Auth"
 import Portfolio from "components/pages/Portfolio"
-import { Spinner } from "components/utils/ui"
+import { DinoLoader } from "components/utils/ui"
 import { useUser } from "providers/UserProvider"
 import { useState, useEffect } from "react"
 
@@ -25,7 +25,7 @@ export default function Home() {
           minHeight: "70vh",
         }}
       >
-        <Spinner />
+        <DinoLoader text fill="var(--unifi-primary)" width={125} height={125} />
       </Center>
     )
   }

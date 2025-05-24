@@ -19,6 +19,7 @@ import { ReactComponent as LogoSVG } from "./icons/Logo.svg"
 import { ReactComponent as SuccessSVG } from "./icons/Success.svg"
 import { ReactComponent as ChevronRightSVG } from "./icons/ChevronRight.svg"
 import { ReactComponent as MenuSVG } from "./icons/Menu.svg"
+import { ReactComponent as PixelDinoSVG } from "./icons/PixelDino.svg"
 
 export const ChartIcon = ChartSVG
 export const TeamIcon = TeamSVG
@@ -38,6 +39,7 @@ export const LogoIcon = LogoSVG
 export const SuccessIcon = SuccessSVG
 export const UserIcon = UserSVG
 export const MenuIcon = MenuSVG
+export const PixelDinoIcon = PixelDinoSVG
 
 // Arrows
 export const ArrowUpIcon = ArrowUpSVG

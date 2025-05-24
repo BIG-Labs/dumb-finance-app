@@ -1,5 +1,6 @@
 import { VStack } from "@big-components/ui"
 import styles from "./Auth.module.scss"
+import Button from "../Button"
 
 interface RegisterProps {
   setView: () => void
@@ -35,9 +36,9 @@ const Register = ({
           onChange={(e) => setUsername(e.target.value)}
         />
       </VStack>
-      <button className={styles.button} onClick={onRegister}>
+      <Button animation onClick={onRegister}>
         Sign In
-      </button>
+      </Button>
       <h4 onClick={setView}>
         Already have an account? <span>Log In</span>
       </h4>

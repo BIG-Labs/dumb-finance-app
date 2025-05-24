@@ -1,6 +1,6 @@
 import * as Highcharts from "highcharts/highstock"
 import HighchartsReact from "highcharts-react-official"
-import { useMemo, useRef } from "react"
+import { useRef } from "react"
 import styles from "./Chart.module.scss"
 import { Token } from "types/response"
 import Stats from "../Stats"
@@ -12,24 +12,12 @@ interface ChartProps {
 const Chart = ({ token }: ChartProps) => {
   const chartComponentRef = useRef<HighchartsReact.RefObject>(null)
 
-  const { prices, symbol, percentChange } = token
-
-  const color = useMemo(() => {
-    if (percentChange > 0) {
-      return "var(--unifi-positive)"
-    } else {
-      return "var(--unifi-negative)"
-    }
-  }, [percentChange])
+  const { symbol } = token
 
   const options = {
     chart: {
       backgroundColor: "transparent",
-      type: "area",
-      height: 450,
-      spacingBottom: 0,
-      spacingLeft: 0,
-      spacingRight: 0,
+      type: "candlestick",
     },
     title: {
       text: "",
@@ -43,12 +31,20 @@ const Chart = ({ token }: ChartProps) => {
           fontSize: "12px",
         },
       },
+      crosshair: {
+        color: "rgba(255, 255, 255, 0.1)",
+      },
     },
     yAxis: {
-      gridLineWidth: 0,
+      gridLineColor: "rgba(255, 255, 255, 0.05)",
       labels: {
-        enabled: false,
+        enabled: true,
+        style: {
+          color: "var(--unifi-supporting)",
+          fontSize: "12px",
+        },
       },
+      opposite: true,
     },
     scrollbar: {
       enabled: false,
@@ -62,35 +58,37 @@ const Chart = ({ token }: ChartProps) => {
     tooltip: {
       shape: "rect",
       shadow: false,
-      borderWidth: 0,
+      borderWidth: 1,
       backgroundColor: "var(--unifi-secondary-hover)",
       borderColor: "var(--unifi-border)",
       style: {
         color: "var(--unifi-text)",
+        fontSize: "12px",
       },
+      split: false,
+      shared: true,
     },
     plotOptions: {
-      area: {
-        color,
-        fillColor: {
-          linearGradient: {
-            x1: 0,
-            x2: 0,
-            y1: 0,
-            y2: 0.8,
-          },
-          stops: [
-            [0, color],
-            [1, "transparent"],
-          ],
+      candlestick: {
+        lineColor: "#e45858",
+        color: "#e45858", // down candle
+        upColor: "#3bc67c", // up candle
+        upLineColor: "#3bc67c",
+      },
+      series: {
+        dataGrouping: {
+          units: [["day", [1]]],
         },
       },
     },
     series: [
       {
         name: symbol + " price",
-        type: "area",
-        data: prices,
+        type: "candlestick",
+        data: [],
+        tooltip: {
+          valueDecimals: 2,
+        },
       },
     ],
     credits: {
@@ -104,7 +102,7 @@ const Chart = ({ token }: ChartProps) => {
       <HighchartsReact
         ref={chartComponentRef}
         highcharts={Highcharts}
-        constructorType={"stockChart"}
+        constructorType="stockChart"
         options={options}
       />
     </div>

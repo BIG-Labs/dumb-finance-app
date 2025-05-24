@@ -7,10 +7,26 @@ import Link from "next/link"
 import classNames from "classnames/bind"
 import DepositOverlay from "components/overlays/Deposit"
 import Settings from "../Settings"
+import { useRouter } from "next/router"
+import { useCallback } from "react"
+import Button from "../Button"
+import { useUser } from "providers/UserProvider"
 
 const cx = classNames.bind(styles)
 
 const Header = () => {
+  const { pathname } = useRouter()
+  const { connected } = useUser()
+
+  const isActive = useCallback(
+    (link: string) => {
+      if (link === "home" && pathname === "/") return true
+
+      return pathname === link
+    },
+    [pathname]
+  )
+
   return (
     <header className={styles.header}>
       <HStack alignItems="center" gap={42}>
@@ -22,19 +38,29 @@ const Header = () => {
         <div className={styles.links}>
           {links.map((link) => (
             <div key={link} className={styles.wrapper}>
-              <Link href={`/${link === "home" ? "" : link}`} passHref>
-                <p className={styles.link}>{capitalizeFirstLetter(link)}</p>
+              <Link href="/" passHref>
+                <p
+                  className={cx("link", {
+                    active: isActive(link),
+                  })}
+                >
+                  {capitalizeFirstLetter(link)}
+                </p>
               </Link>
             </div>
           ))}
         </div>
       </HStack>
-      <HStack alignItems="center" gap={32}>
+      <HStack alignItems="center" gap={28}>
         <Opener
           renderOpener={({ onOpen }) => (
-            <button className={cx(styles.menu, "deposit")} onClick={onOpen}>
+            <Button
+              className={cx("deposit")}
+              onClick={onOpen}
+              disabled={!connected}
+            >
               Deposit
-            </button>
+            </Button>
           )}
           renderContent={({ onClose }) => <DepositOverlay onClose={onClose} />}
         />

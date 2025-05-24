@@ -5,6 +5,7 @@ import Register from "./Register"
 import styles from "./Auth.module.scss"
 import useLogin from "post/useLogin"
 import useRegister from "post/useRegister"
+import WalkingDino from "../WalkingDino"
 
 const Auth = () => {
   const [username, setUsername] = useState("")
@@ -19,6 +20,7 @@ const Auth = () => {
   return (
     <Center>
       <div className={styles.container}>
+        <WalkingDino />
         <Match
           value={view}
           login={() => (

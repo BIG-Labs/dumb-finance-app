@@ -27,7 +27,7 @@ const Actions = () => {
   return (
     <div className={styles.actions}>
       <div
-        className={cx(styles.indicator, {
+        className={cx("indicator", {
           first: active === "swap",
           last: active === "short",
         })}
@@ -35,7 +35,9 @@ const Actions = () => {
       {buttons.map(({ icon, label }) => (
         <button
           key={label}
-          className={styles.action}
+          className={cx("action", {
+            active: active === label,
+          })}
           onClick={() => setActive(label)}
         >
           {icon} {capitalizeFirstLetter(label)}

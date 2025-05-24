@@ -7,6 +7,7 @@ import { ChevronRightIcon, CoinIcon } from "assets"
 import ProfitText from "components/common/Profit/ProfitText"
 import { useRouter } from "next/router"
 import Skeleton from "react-loading-skeleton"
+import { assertNumberTooSmall } from "components/utils/math"
 
 const Tokens = () => {
   const { push } = useRouter()
@@ -79,20 +80,16 @@ const Tokens = () => {
                   <HStack alignItems="center" gap={8}>
                     <VStack alignItems="flex-end" gap={2}>
                       <p className={styles.balance}>
-                        {balance.toLocaleString()}
+                        {assertNumberTooSmall(balance, 0.01)}
                       </p>
                       <p className={styles.value}>
-                        $
-                        {(balance * price).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                        {assertNumberTooSmall(balance * price, 0.01, 2, true)}
                       </p>
                     </VStack>
                     <ChevronRightIcon
                       width={20}
                       height={20}
-                      stroke="var(--unifi-supporting)"
+                      stroke="var(--unifi-primary)"
                       strokeWidth={1.5}
                     />
                   </HStack>

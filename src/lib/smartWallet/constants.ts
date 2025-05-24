@@ -1,9 +1,9 @@
-import { toHex, zeroAddress } from "viem";
-import { UserOperation } from "viem/account-abstraction";
+import { toHex, zeroAddress } from "viem"
+import { UserOperation } from "viem/account-abstraction"
 
-export const DEFAULT_CALL_GAS_LIMIT = BigInt(400_000);
-export const DEFAULT_VERIFICATION_GAS_LIMIT = BigInt(2_000_000); // 2M
-export const DEFAULT_PRE_VERIFICATION_GAS = BigInt(80_000); //65000
+export const DEFAULT_CALL_GAS_LIMIT = BigInt(2_000_000)
+export const DEFAULT_VERIFICATION_GAS_LIMIT = BigInt(2_000_000) // 2M
+export const DEFAULT_PRE_VERIFICATION_GAS = BigInt(80_000) //65000
 
 export const DEFAULT_USER_OP: UserOperation = {
   sender: zeroAddress,
@@ -17,4 +17,4 @@ export const DEFAULT_USER_OP: UserOperation = {
   callGasLimit: DEFAULT_CALL_GAS_LIMIT,
   preVerificationGas: DEFAULT_PRE_VERIFICATION_GAS,
   verificationGasLimit: DEFAULT_VERIFICATION_GAS_LIMIT,
-} satisfies UserOperation;
+} satisfies UserOperation

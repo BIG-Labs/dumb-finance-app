@@ -1,4 +1,4 @@
-export type SessionData = {
+type SessionData = {
   userId: string
   challenge: string
 }

@@ -1,5 +1,6 @@
 import { HStack, VStack } from "@big-components/ui"
 import styles from "./Auth.module.scss"
+import Button from "../Button"
 
 interface LoginProps {
   setView: () => void
@@ -21,11 +22,14 @@ const Login = ({ setView, onLogin, setEmail }: LoginProps) => {
           placeholder="hello@greeting.com"
           className={styles.input}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onLogin()
+            }
+          }}
         />
       </VStack>
-      <button className={styles.button} onClick={onLogin}>
-        Log In
-      </button>
+      <Button onClick={onLogin}>Log In</Button>
     </VStack>
   )
 }

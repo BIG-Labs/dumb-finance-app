@@ -3,26 +3,13 @@
   display: inline-block;
 
   .menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    background-color: transparent;
-    border: 1px solid var(--unifi-border);
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
+    width: 65px; // base width
+    gap: 4px;
+    padding: 8px;
     transition: all 0.3s ease-in-out;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--unifi-text);
 
-    &:hover {
-      background-color: var(--unifi-secondary-hover);
-    }
-
-    &.deposit {
-      width: 120px;
+    &.open {
+      width: 225px;
     }
   }
 
@@ -34,7 +21,7 @@
     background-color: var(--unifi-secondary);
     border: 1px solid var(--unifi-border);
     margin-top: 8px;
-    width: 180px;
+    width: 225px;
     padding: 12px;
     border-radius: 8px;
   }

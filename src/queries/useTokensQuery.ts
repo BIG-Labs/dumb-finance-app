@@ -1,56 +1,57 @@
-import {
-  fromChainAmount,
-  rarelyChangingQueryOptions,
-} from "@big-components/utils"
+import { fromChainAmount } from "@big-components/utils"
 import { useQuery } from "@tanstack/react-query"
 import { tokens } from "constants/utils"
 import { useUser } from "providers/UserProvider"
+import { chains } from "providers/WagmiProvider"
 import { Token } from "types/response"
-import { createPublicClient, erc20Abi, Hex, http } from "viem"
-import { avalancheFuji } from "viem/chains"
+import { createPublicClient, erc20Abi, http } from "viem"
+import { avalanche } from "viem/chains"
 
 const useTokensQuery = () => {
   const { user } = useUser()
 
-  return useQuery<Array<Token>>({
-    queryKey: ["tokens"],
+  return useQuery<Array<Token & { balance: number }>>({
+    queryKey: ["tokens", user, tokens],
     queryFn: async () => {
       if (!user) {
         return []
       }
 
-      const client = createPublicClient({
-        chain: avalancheFuji,
+      const holder: Array<Token & { balance: number }> = []
+
+      const avaClient = createPublicClient({
+        chain: avalanche,
         transport: http(),
       })
 
-      const holder: Token[] = []
+      const coqClient = createPublicClient({
+        chain: chains[1],
+        transport: http(),
+      })
 
-      for (const token of tokens) {
-        if (token.address === "0x") {
-          holder.push({
-            ...token,
-            balance: 0,
-          })
-          continue
-        }
+      const avaBalance = await avaClient.getBalance({
+        address: user.address,
+      })
 
-        const balance = await client.readContract({
-          abi: erc20Abi,
-          address: token.address as Hex,
-          functionName: "balanceOf",
-          args: [user.address],
-        })
+      const coqBalance = await coqClient.readContract({
+        abi: erc20Abi,
+        address: "0x1BB241dF1B33a9A5CABB63d81Ef0485c17aa0EB3",
+        functionName: "balanceOf",
+        args: [user.address],
+      })
 
-        holder.push({
-          ...token,
-          balance: fromChainAmount(Number(balance), token.decimals),
-        })
-      }
+      holder.push({
+        ...tokens[0],
+        balance: fromChainAmount(avaBalance.toString(), 18),
+      })
+
+      holder.push({
+        ...tokens[1],
+        balance: fromChainAmount(coqBalance.toString(), 6),
+      })
 
       return holder
     },
-    ...rarelyChangingQueryOptions,
   })
 }
 

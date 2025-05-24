@@ -1,6 +1,6 @@
 import { Hex } from "viem"
 
-const FACTORY_ADDRESS = "0xFE1D5cadBff2E1103724843F2e1F0397468C54E5" as Hex
+const FACTORY_ADDRESS = "0x940F6aFF8F3C42330686aaf307D3fe20b00FCB7D" as Hex
 const FACTORY_ABI = [
   {
     type: "function",
@@ -26,774 +26,449 @@ const FACTORY_ABI = [
   },
 ] as const
 
-const TRADERJOE_ABI = [
+const ROUTER_ABI = [
   {
-    inputs: [
-      {
-        internalType: "contract ILBFactory",
-        name: "factory2_2",
-        type: "address",
-      },
-      {
-        internalType: "contract IJoeFactory",
-        name: "factoryV1",
-        type: "address",
-      },
-      {
-        internalType: "contract ILBLegacyFactory",
-        name: "legacyFactory",
-        type: "address",
-      },
-      {
-        internalType: "contract ILBLegacyRouter",
-        name: "legacyRouter",
-        type: "address",
-      },
-      {
-        internalType: "contract ILBFactory",
-        name: "factory2_1",
-        type: "address",
-      },
-      { internalType: "contract IWNATIVE", name: "wnative", type: "address" },
-    ],
-    stateMutability: "nonpayable",
     type: "constructor",
-  },
-  { inputs: [], name: "JoeLibrary__InsufficientAmount", type: "error" },
-  { inputs: [], name: "JoeLibrary__InsufficientLiquidity", type: "error" },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountSlippage", type: "uint256" },
-    ],
-    name: "LBRouter__AmountSlippageBPTooBig",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountXMin", type: "uint256" },
-      { internalType: "uint256", name: "amountX", type: "uint256" },
-      { internalType: "uint256", name: "amountYMin", type: "uint256" },
-      { internalType: "uint256", name: "amountY", type: "uint256" },
-    ],
-    name: "LBRouter__AmountSlippageCaught",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "id", type: "uint256" }],
-    name: "LBRouter__BinReserveOverflows",
-    type: "error",
-  },
-  { inputs: [], name: "LBRouter__BrokenSwapSafetyCheck", type: "error" },
-  {
-    inputs: [
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-      { internalType: "uint256", name: "currentTimestamp", type: "uint256" },
-    ],
-    name: "LBRouter__DeadlineExceeded",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "recipient", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
-    ],
-    name: "LBRouter__FailedToSendNATIVE",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "idDesired", type: "uint256" },
-      { internalType: "uint256", name: "idSlippage", type: "uint256" },
-    ],
-    name: "LBRouter__IdDesiredOverflows",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "int256", name: "id", type: "int256" }],
-    name: "LBRouter__IdOverflows",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "activeIdDesired", type: "uint256" },
-      { internalType: "uint256", name: "idSlippage", type: "uint256" },
-      { internalType: "uint256", name: "activeId", type: "uint256" },
-    ],
-    name: "LBRouter__IdSlippageCaught",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountOutMin", type: "uint256" },
-      { internalType: "uint256", name: "amountOut", type: "uint256" },
-    ],
-    name: "LBRouter__InsufficientAmountOut",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "address", name: "wrongToken", type: "address" }],
-    name: "LBRouter__InvalidTokenPath",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "version", type: "uint256" }],
-    name: "LBRouter__InvalidVersion",
-    type: "error",
-  },
-  { inputs: [], name: "LBRouter__LengthsMismatch", type: "error" },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountInMax", type: "uint256" },
-      { internalType: "uint256", name: "amountIn", type: "uint256" },
-    ],
-    name: "LBRouter__MaxAmountInExceeded",
-    type: "error",
-  },
-  { inputs: [], name: "LBRouter__NotFactoryOwner", type: "error" },
-  {
-    inputs: [
-      { internalType: "address", name: "tokenX", type: "address" },
-      { internalType: "address", name: "tokenY", type: "address" },
-      { internalType: "uint256", name: "binStep", type: "uint256" },
-    ],
-    name: "LBRouter__PairNotCreated",
-    type: "error",
-  },
-  { inputs: [], name: "LBRouter__SenderIsNotWNATIVE", type: "error" },
-  {
-    inputs: [{ internalType: "uint256", name: "id", type: "uint256" }],
-    name: "LBRouter__SwapOverflows",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "excess", type: "uint256" }],
-    name: "LBRouter__TooMuchTokensIn",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amount", type: "uint256" },
-      { internalType: "uint256", name: "reserve", type: "uint256" },
-    ],
-    name: "LBRouter__WrongAmounts",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "tokenX", type: "address" },
-      { internalType: "address", name: "tokenY", type: "address" },
-      { internalType: "uint256", name: "amountX", type: "uint256" },
-      { internalType: "uint256", name: "amountY", type: "uint256" },
-      { internalType: "uint256", name: "msgValue", type: "uint256" },
-    ],
-    name: "LBRouter__WrongNativeLiquidityParameters",
-    type: "error",
-  },
-  { inputs: [], name: "LBRouter__WrongTokenOrder", type: "error" },
-  { inputs: [], name: "PackedUint128Math__SubUnderflow", type: "error" },
-  { inputs: [], name: "TokenHelper__TransferFailed", type: "error" },
-  {
     inputs: [
       {
-        components: [
-          { internalType: "contract IERC20", name: "tokenX", type: "address" },
-          { internalType: "contract IERC20", name: "tokenY", type: "address" },
-          { internalType: "uint256", name: "binStep", type: "uint256" },
-          { internalType: "uint256", name: "amountX", type: "uint256" },
-          { internalType: "uint256", name: "amountY", type: "uint256" },
-          { internalType: "uint256", name: "amountXMin", type: "uint256" },
-          { internalType: "uint256", name: "amountYMin", type: "uint256" },
-          { internalType: "uint256", name: "activeIdDesired", type: "uint256" },
-          { internalType: "uint256", name: "idSlippage", type: "uint256" },
-          { internalType: "int256[]", name: "deltaIds", type: "int256[]" },
-          {
-            internalType: "uint256[]",
-            name: "distributionX",
-            type: "uint256[]",
-          },
-          {
-            internalType: "uint256[]",
-            name: "distributionY",
-            type: "uint256[]",
-          },
-          { internalType: "address", name: "to", type: "address" },
-          { internalType: "address", name: "refundTo", type: "address" },
-          { internalType: "uint256", name: "deadline", type: "uint256" },
-        ],
-        internalType: "struct ILBRouter.LiquidityParameters",
-        name: "liquidityParameters",
-        type: "tuple",
-      },
-    ],
-    name: "addLiquidity",
-    outputs: [
-      { internalType: "uint256", name: "amountXAdded", type: "uint256" },
-      { internalType: "uint256", name: "amountYAdded", type: "uint256" },
-      { internalType: "uint256", name: "amountXLeft", type: "uint256" },
-      { internalType: "uint256", name: "amountYLeft", type: "uint256" },
-      { internalType: "uint256[]", name: "depositIds", type: "uint256[]" },
-      { internalType: "uint256[]", name: "liquidityMinted", type: "uint256[]" },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          { internalType: "contract IERC20", name: "tokenX", type: "address" },
-          { internalType: "contract IERC20", name: "tokenY", type: "address" },
-          { internalType: "uint256", name: "binStep", type: "uint256" },
-          { internalType: "uint256", name: "amountX", type: "uint256" },
-          { internalType: "uint256", name: "amountY", type: "uint256" },
-          { internalType: "uint256", name: "amountXMin", type: "uint256" },
-          { internalType: "uint256", name: "amountYMin", type: "uint256" },
-          { internalType: "uint256", name: "activeIdDesired", type: "uint256" },
-          { internalType: "uint256", name: "idSlippage", type: "uint256" },
-          { internalType: "int256[]", name: "deltaIds", type: "int256[]" },
-          {
-            internalType: "uint256[]",
-            name: "distributionX",
-            type: "uint256[]",
-          },
-          {
-            internalType: "uint256[]",
-            name: "distributionY",
-            type: "uint256[]",
-          },
-          { internalType: "address", name: "to", type: "address" },
-          { internalType: "address", name: "refundTo", type: "address" },
-          { internalType: "uint256", name: "deadline", type: "uint256" },
-        ],
-        internalType: "struct ILBRouter.LiquidityParameters",
-        name: "liquidityParameters",
-        type: "tuple",
-      },
-    ],
-    name: "addLiquidityNATIVE",
-    outputs: [
-      { internalType: "uint256", name: "amountXAdded", type: "uint256" },
-      { internalType: "uint256", name: "amountYAdded", type: "uint256" },
-      { internalType: "uint256", name: "amountXLeft", type: "uint256" },
-      { internalType: "uint256", name: "amountYLeft", type: "uint256" },
-      { internalType: "uint256[]", name: "depositIds", type: "uint256[]" },
-      { internalType: "uint256[]", name: "liquidityMinted", type: "uint256[]" },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "contract IERC20", name: "tokenX", type: "address" },
-      { internalType: "contract IERC20", name: "tokenY", type: "address" },
-      { internalType: "uint24", name: "activeId", type: "uint24" },
-      { internalType: "uint16", name: "binStep", type: "uint16" },
-    ],
-    name: "createLBPair",
-    outputs: [
-      { internalType: "contract ILBPair", name: "pair", type: "address" },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getFactory",
-    outputs: [
-      {
-        internalType: "contract ILBFactory",
-        name: "lbFactory",
+        name: "owner",
         type: "address",
+        internalType: "address",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getFactoryV2_1",
-    outputs: [
       {
-        internalType: "contract ILBFactory",
-        name: "lbFactory",
+        name: "teleporterRegistry",
         type: "address",
+        internalType: "address",
+      },
+      {
+        name: "minTeleporterVersion",
+        type: "uint256",
+        internalType: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: "nonpayable",
   },
   {
-    inputs: [
-      { internalType: "contract ILBPair", name: "pair", type: "address" },
-      { internalType: "uint256", name: "price", type: "uint256" },
-    ],
-    name: "getIdFromPrice",
-    outputs: [{ internalType: "uint24", name: "", type: "uint24" }],
-    stateMutability: "view",
     type: "function",
-  },
-  {
+    name: "feeCollector",
     inputs: [],
-    name: "getLegacyFactory",
     outputs: [
       {
-        internalType: "contract ILBLegacyFactory",
-        name: "legacyLBfactory",
+        name: "",
         type: "address",
+        internalType: "address",
       },
     ],
     stateMutability: "view",
-    type: "function",
   },
   {
+    type: "function",
+    name: "getMinTeleporterVersion",
     inputs: [],
-    name: "getLegacyRouter",
     outputs: [
       {
-        internalType: "contract ILBLegacyRouter",
-        name: "legacyRouter",
+        name: "",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "isTeleporterAddressPaused",
+    inputs: [
+      {
+        name: "teleporterAddress",
         type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [
+      {
+        name: "",
+        type: "bool",
+        internalType: "bool",
       },
     ],
     stateMutability: "view",
-    type: "function",
   },
   {
-    inputs: [
-      { internalType: "contract ILBPair", name: "pair", type: "address" },
-      { internalType: "uint24", name: "id", type: "uint24" },
-    ],
-    name: "getPriceFromId",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
     type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "contract ILBPair", name: "pair", type: "address" },
-      { internalType: "uint128", name: "amountOut", type: "uint128" },
-      { internalType: "bool", name: "swapForY", type: "bool" },
-    ],
-    name: "getSwapIn",
-    outputs: [
-      { internalType: "uint128", name: "amountIn", type: "uint128" },
-      { internalType: "uint128", name: "amountOutLeft", type: "uint128" },
-      { internalType: "uint128", name: "fee", type: "uint128" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "contract ILBPair", name: "pair", type: "address" },
-      { internalType: "uint128", name: "amountIn", type: "uint128" },
-      { internalType: "bool", name: "swapForY", type: "bool" },
-    ],
-    name: "getSwapOut",
-    outputs: [
-      { internalType: "uint128", name: "amountInLeft", type: "uint128" },
-      { internalType: "uint128", name: "amountOut", type: "uint128" },
-      { internalType: "uint128", name: "fee", type: "uint128" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
+    name: "owner",
     inputs: [],
-    name: "getV1Factory",
     outputs: [
       {
-        internalType: "contract IJoeFactory",
-        name: "factoryV1",
+        name: "",
         type: "address",
+        internalType: "address",
       },
     ],
     stateMutability: "view",
-    type: "function",
   },
   {
-    inputs: [],
-    name: "getWNATIVE",
-    outputs: [
-      { internalType: "contract IWNATIVE", name: "wnative", type: "address" },
-    ],
-    stateMutability: "view",
     type: "function",
-  },
-  {
+    name: "pauseTeleporterAddress",
     inputs: [
-      { internalType: "contract IERC20", name: "tokenX", type: "address" },
-      { internalType: "contract IERC20", name: "tokenY", type: "address" },
-      { internalType: "uint16", name: "binStep", type: "uint16" },
-      { internalType: "uint256", name: "amountXMin", type: "uint256" },
-      { internalType: "uint256", name: "amountYMin", type: "uint256" },
-      { internalType: "uint256[]", name: "ids", type: "uint256[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "removeLiquidity",
-    outputs: [
-      { internalType: "uint256", name: "amountX", type: "uint256" },
-      { internalType: "uint256", name: "amountY", type: "uint256" },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "contract IERC20", name: "token", type: "address" },
-      { internalType: "uint16", name: "binStep", type: "uint16" },
-      { internalType: "uint256", name: "amountTokenMin", type: "uint256" },
-      { internalType: "uint256", name: "amountNATIVEMin", type: "uint256" },
-      { internalType: "uint256[]", name: "ids", type: "uint256[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
-      { internalType: "address payable", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "removeLiquidityNATIVE",
-    outputs: [
-      { internalType: "uint256", name: "amountToken", type: "uint256" },
-      { internalType: "uint256", name: "amountNATIVE", type: "uint256" },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountOutMin", type: "uint256" },
       {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
+        name: "teleporterAddress",
+        type: "address",
+        internalType: "address",
       },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
     ],
-    name: "swapExactNATIVEForTokens",
-    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountOutMin", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapExactNATIVEForTokensSupportingFeeOnTransferTokens",
-    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountIn", type: "uint256" },
-      { internalType: "uint256", name: "amountOutMinNATIVE", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address payable", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapExactTokensForNATIVE",
-    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountIn", type: "uint256" },
-      { internalType: "uint256", name: "amountOutMinNATIVE", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address payable", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapExactTokensForNATIVESupportingFeeOnTransferTokens",
-    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountIn", type: "uint256" },
-      { internalType: "uint256", name: "amountOutMin", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapExactTokensForTokens",
-    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountIn", type: "uint256" },
-      { internalType: "uint256", name: "amountOutMin", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapExactTokensForTokensSupportingFeeOnTransferTokens",
-    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountOut", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapNATIVEForExactTokens",
-    outputs: [
-      { internalType: "uint256[]", name: "amountsIn", type: "uint256[]" },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountNATIVEOut", type: "uint256" },
-      { internalType: "uint256", name: "amountInMax", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address payable", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapTokensForExactNATIVE",
-    outputs: [
-      { internalType: "uint256[]", name: "amountsIn", type: "uint256[]" },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amountOut", type: "uint256" },
-      { internalType: "uint256", name: "amountInMax", type: "uint256" },
-      {
-        components: [
-          {
-            internalType: "uint256[]",
-            name: "pairBinSteps",
-            type: "uint256[]",
-          },
-          {
-            internalType: "enum ILBRouter.Version[]",
-            name: "versions",
-            type: "uint8[]",
-          },
-          {
-            internalType: "contract IERC20[]",
-            name: "tokenPath",
-            type: "address[]",
-          },
-        ],
-        internalType: "struct ILBRouter.Path",
-        name: "path",
-        type: "tuple",
-      },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "deadline", type: "uint256" },
-    ],
-    name: "swapTokensForExactTokens",
-    outputs: [
-      { internalType: "uint256[]", name: "amountsIn", type: "uint256[]" },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "contract IERC20", name: "token", type: "address" },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
-    ],
-    name: "sweep",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
   },
   {
+    type: "function",
+    name: "receiveTeleporterMessage",
     inputs: [
-      { internalType: "contract ILBToken", name: "lbToken", type: "address" },
-      { internalType: "address", name: "to", type: "address" },
-      { internalType: "uint256[]", name: "ids", type: "uint256[]" },
-      { internalType: "uint256[]", name: "amounts", type: "uint256[]" },
+      {
+        name: "sourceBlockchainID",
+        type: "bytes32",
+        internalType: "bytes32",
+      },
+      {
+        name: "originSenderAddress",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "message",
+        type: "bytes",
+        internalType: "bytes",
+      },
     ],
-    name: "sweepLBToken",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
   },
-  { stateMutability: "payable", type: "receive" },
-] as const
-const TRADERJOE_ROUTER_ADDRESS =
-  "0xb4315e873dBcf96Ffd0acd8EA43f689D8c20fB30" as Hex
+  {
+    type: "function",
+    name: "renounceOwnership",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "start",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        internalType: "address",
+      },
+      {
+        name: "amount",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "instructions",
+        type: "tuple",
+        internalType: "struct Instructions",
+        components: [
+          {
+            name: "receiver",
+            type: "address",
+            internalType: "address",
+          },
+          {
+            name: "hops",
+            type: "tuple[]",
+            internalType: "struct Hop[]",
+            components: [
+              {
+                name: "action",
+                type: "uint8",
+                internalType: "enum Action",
+              },
+              {
+                name: "requiredGasLimit",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "recipientGasLimit",
+                type: "uint256",
+                internalType: "uint256",
+              },
+              {
+                name: "trade",
+                type: "bytes",
+                internalType: "bytes",
+              },
+              {
+                name: "bridgePath",
+                type: "tuple",
+                internalType: "struct BridgePath",
+                components: [
+                  {
+                    name: "bridgeSourceChain",
+                    type: "address",
+                    internalType: "address",
+                  },
+                  {
+                    name: "sourceBridgeIsNative",
+                    type: "bool",
+                    internalType: "bool",
+                  },
+                  {
+                    name: "bridgeDestinationChain",
+                    type: "address",
+                    internalType: "address",
+                  },
+                  {
+                    name: "cellDestinationChain",
+                    type: "address",
+                    internalType: "address",
+                  },
+                  {
+                    name: "destinationBlockchainID",
+                    type: "bytes32",
+                    internalType: "bytes32",
+                  },
+                  {
+                    name: "teleporterFee",
+                    type: "uint256",
+                    internalType: "uint256",
+                  },
+                  {
+                    name: "secondaryTeleporterFee",
+                    type: "uint256",
+                    internalType: "uint256",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "receiver",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "payable",
+  },
+  {
+    type: "function",
+    name: "teleporterRegistry",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "address",
+        internalType: "contract TeleporterRegistry",
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "transferOwnership",
+    inputs: [
+      {
+        name: "newOwner",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "unpauseTeleporterAddress",
+    inputs: [
+      {
+        name: "teleporterAddress",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "updateMinTeleporterVersion",
+    inputs: [
+      {
+        name: "version",
+        type: "uint256",
+        internalType: "uint256",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "event",
+    name: "MinTeleporterVersionUpdated",
+    inputs: [
+      {
+        name: "oldMinTeleporterVersion",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+      {
+        name: "newMinTeleporterVersion",
+        type: "uint256",
+        indexed: true,
+        internalType: "uint256",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "OwnershipTransferred",
+    inputs: [
+      {
+        name: "previousOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+      {
+        name: "newOwner",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "TeleporterAddressPaused",
+    inputs: [
+      {
+        name: "teleporterAddress",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "event",
+    name: "TeleporterAddressUnpaused",
+    inputs: [
+      {
+        name: "teleporterAddress",
+        type: "address",
+        indexed: true,
+        internalType: "address",
+      },
+    ],
+    anonymous: false,
+  },
+  {
+    type: "error",
+    name: "AddressEmptyCode",
+    inputs: [
+      {
+        name: "target",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "AddressInsufficientBalance",
+    inputs: [
+      {
+        name: "account",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "FailedInnerCall",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "InvalidAmount",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "InvalidArgument",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "InvalidInstructions",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "OwnableInvalidOwner",
+    inputs: [
+      {
+        name: "owner",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "OwnableUnauthorizedAccount",
+    inputs: [
+      {
+        name: "account",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    name: "ReentrancyGuardReentrantCall",
+    inputs: [],
+  },
+  {
+    type: "error",
+    name: "SafeERC20FailedOperation",
+    inputs: [
+      {
+        name: "token",
+        type: "address",
+        internalType: "address",
+      },
+    ],
+  },
+]
+const ROUTER_ADDRESS = "0x681Bf6Fbc98C779b534925426929BD7cAe87C054" as Hex
 
-export { FACTORY_ABI, FACTORY_ADDRESS, TRADERJOE_ABI, TRADERJOE_ROUTER_ADDRESS }
+const tokenHomesAddress: Record<Hex, Hex> = {
+  "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7": "" as Hex,
+  "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E":
+    "0x698044F6CC7186D1e2dbEF130d20Dc6dfbA9ecC5" as Hex,
+}
+
+const tokenRemotesAddress: Record<Hex, Hex> = {
+  "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7": "" as Hex,
+  "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E":
+    "0x1BB241dF1B33a9A5CABB63d81Ef0485c17aa0EB3" as Hex,
+}
+
+export {
+  FACTORY_ABI,
+  FACTORY_ADDRESS,
+  ROUTER_ABI,
+  ROUTER_ADDRESS,
+  tokenHomesAddress,
+  tokenRemotesAddress,
+}

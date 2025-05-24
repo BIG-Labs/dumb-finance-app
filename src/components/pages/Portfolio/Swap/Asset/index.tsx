@@ -10,7 +10,7 @@ interface AssetProps {
   setAmount: (amount: number) => void
   onOpen: () => void
   amount?: number
-  token?: Token
+  token?: Token & { balance: number }
   from?: Token
 }
 

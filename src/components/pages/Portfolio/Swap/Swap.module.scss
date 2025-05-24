@@ -17,7 +17,7 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--unifi-border);
-    
+
     &:hover {
       background-color: var(--unifi-secondary-hover);
     }
@@ -66,8 +66,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: var(--unifi-primary);
     border: 1px solid var(--unifi-border);
-    background-color: transparent;
+    color: black;
     width: 40px;
     height: 40px;
     padding: 8px;
@@ -75,27 +76,38 @@
     cursor: pointer;
     transition: all 0.3s ease-in-out;
 
+    svg {
+      transition: all 0.3s ease-in-out;
+    }
+
     &:hover {
-      background-color: var(--unifi-secondary-hover);
+      background-color: var(--unifi-primary-hover);
+      transform: scale(1.10);
+
+      svg {
+        transition: all 0.3s ease-in-out;
+        transform: rotate(180deg);
+      }
     }
   }
 
   .button {
     width: 100%;
-    background-color: transparent;
+    background-color: var(--unifi-primary);
     border: 1px solid var(--unifi-border);
     outline: none;
     padding: 12px;
     font-size: 16px;
     font-weight: 600;
-    color: var(--unifi-text);
+    color: black;
     border-radius: 18px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     margin-top: auto;
 
     &:hover {
-      background-color: var(--unifi-secondary-hover);
+      background-color: var(--unifi-primary-hover);
+      transform: scale(1.05);
     }
   }
 

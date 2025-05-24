@@ -44,29 +44,33 @@
         font-size: 14px;
         color: var(--unifi-text);
         font-weight: 600;
-      }
 
-      .link::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -6px;
-        width: 100%;
-        height: 2px;
-        background: var(--unifi-text);
-        border-radius: 2px;
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s ease-in-out;
-      }
+        &::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -4px;
+          width: 100%;
+          height: 2px;
+          background: var(--unifi-primary);
+          border-radius: 2px;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.3s ease-in-out;
+        }
 
-      .link:hover::after {
-        transform: scaleX(1);
-      }
+        &:hover::after {
+          transform: scaleX(1);
+        }
 
-      .link:not(:hover)::after {
-        transform-origin: right;
-        transform: scaleX(0);
+        &.active::after {
+          transform: scaleX(1);
+        }
+
+        &:not(:hover):not(.active)::after {
+          transform-origin: right;
+          transform: scaleX(0);
+        }
       }
     }
 
@@ -75,27 +79,9 @@
     }
   }
 
-  .menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    background-color: transparent;
-    border: 1px solid var(--unifi-border);
+  .deposit {
+    padding: 8px 12px;
     border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--unifi-text);
-
-    &:hover {
-      background-color: var(--unifi-secondary-hover);
-    }
-
-    &.deposit {
-      width: 120px;
-    }
+    width: 120px;
   }
 }

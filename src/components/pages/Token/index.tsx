@@ -1,28 +1,17 @@
-import { Center, HStack, VStack } from "@big-components/ui"
-import { Spinner } from "components/utils/ui"
-import useTokenQuery from "queries/useTokenQuery"
-import dynamic from "next/dynamic"
-import { Img } from "react-image"
-import { CoinIcon } from "assets"
-import styles from "./Token.module.scss"
-import Swap from "./Swap"
-
-const DynamicChart = dynamic(() => import("./Chart"), { ssr: false })
-
 interface TokenProps {
   id: number
 }
 
-const Token = ({ id }: TokenProps) => {
-  const { data, isLoading } = useTokenQuery(id)
+const Token = ({}: TokenProps) => {
+  return null
 
-  return isLoading || !data ? (
+  /* return isLoading || !data ? (
     <Center
       style={{
         minHeight: "70vh",
       }}
     >
-      <Spinner />
+      <DinoLoader width={65} height={65} fill="var(--unifi-primary)" text />
     </Center>
   ) : (
     <HStack whole padding={24} gap={42}>
@@ -49,10 +38,10 @@ const Token = ({ id }: TokenProps) => {
           </HStack>
           <VStack alignItems="flex-end" gap={4}>
             <h1 className={styles.name}>
-              {data.balance} {data.symbol}
+              {0} {data.symbol}
             </h1>
             <p className={styles.symbol}>
-              ${(data.balance * data.price).toLocaleString()}
+              ${(0 * data.price).toLocaleString()}
             </p>
           </VStack>
         </HStack>
@@ -60,9 +49,9 @@ const Token = ({ id }: TokenProps) => {
           <DynamicChart token={data} />
         </VStack>
       </VStack>
-      <Swap token={data}/>
+      <Swap token={data} />
     </HStack>
-  )
+  ) */
 }
 
 export default Token

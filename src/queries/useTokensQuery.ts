@@ -29,8 +29,11 @@ const useTokensQuery = () => {
         transport: http(),
       })
 
-      const avaBalance = await avaClient.getBalance({
-        address: user.address,
+      const avaBalance = await avaClient.readContract({
+        abi: erc20Abi,
+        address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+        functionName: "balanceOf",
+        args: [user.address],
       })
 
       const coqBalance = await coqClient.readContract({

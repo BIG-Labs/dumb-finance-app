@@ -75,7 +75,24 @@ const Asset = ({ amount, setAmount, token, from, onOpen }: AssetProps) => {
                 height={18}
                 unloader={<CoinIcon width={24} height={24} />}
               />
-              <p className={styles.symbol}>{token.symbol}</p>
+              <VStack gap={2}>
+                <p className={styles.symbol}>{token.symbol}</p>
+                <HStack alignItems="center" gap={2}>
+                  <Img
+                    src={`/chain/${token.tokenOrigin?.id.toString()}.svg`}
+                    alt={token.symbol}
+                    width={11}
+                    height={11}
+                  />
+                  <small
+                    style={{
+                      fontSize: 10,
+                    }}
+                  >
+                    {token.tokenOrigin?.name}
+                  </small>
+                </HStack>
+              </VStack>
               <ChevronDownIcon width={18} height={18} stroke="currentColor" />
             </button>
             <p

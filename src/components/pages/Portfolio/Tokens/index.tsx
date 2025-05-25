@@ -47,6 +47,7 @@ const Tokens = () => {
                 price,
                 balance,
                 percentChange,
+                tokenOrigin,
               }) => (
                 <div
                   key={`${address}-${id}`}
@@ -67,6 +68,21 @@ const Tokens = () => {
                       <HStack alignItems="center" gap={4}>
                         <p className={styles.name}>{name}</p>
                         <ProfitText percentage={percentChange} size={11} />
+                      </HStack>
+                      <HStack alignItems="center" gap={2}>
+                        <Img
+                          src={`/chain/${tokenOrigin?.id.toString()}.svg`}
+                          alt={symbol}
+                          width={11}
+                          height={11}
+                        />
+                        <small
+                          style={{
+                            fontSize: 10,
+                          }}
+                        >
+                          {tokenOrigin?.name}
+                        </small>
                       </HStack>
                       <HStack alignItems="center" gap={6}>
                         <p className={styles.symbol}>{symbol}</p>

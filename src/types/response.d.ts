@@ -10,6 +10,10 @@ type Token = {
   price: number
   chainId: number
   percentChange: number
+  tokenOrigin?: {
+    name: string
+    id: number
+  }
 }
 
 type Path = {

@@ -26,6 +26,10 @@ const tokens: Array<Token> = [
     percentChange: 1.247,
     chainId: 43_114,
     address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+    tokenOrigin: {
+      name: "Avalanche",
+      id: 43_114
+    },
   },
   {
     id: 2,
@@ -37,6 +41,10 @@ const tokens: Array<Token> = [
     percentChange: 0.01,
     chainId: 43_114,
     address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+    tokenOrigin: {
+      name: "coqnet",
+      id: 42_069
+    },
   },
 ]
 
